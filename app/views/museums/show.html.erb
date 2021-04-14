@@ -1,0 +1,139 @@
+<table>
+  <!--博物館の外観画像-->
+　<tr>
+　  <th colspan="2"><%= attachment_image_tag @museum, :appearance_image, size:"80x80", format:'jpeg' %></th>
+　</tr>
+　<!--博物館名-->
+　<tr>
+　  <th colspan="2"><%= @museum.name %></th>
+　</tr>
+　<!--博物館のジャンル-->
+  <tr>
+    <th>ジャンル</th>
+    <td><%= @museum.genre.name %></td>
+  </tr>
+  <!--博物館の住所(リンク先はmap/index)-->
+  <tr>
+    <th>住所</th>
+    <td><%= @museum.prefecture %><%= @museum.address %></td>
+  </tr>
+  <!--博物館の営業時間-->
+  <tr>
+    <th>営業時間</th>
+    <td><%= @museum.opening_time %> ～ <%= @museum.closing_time %></td>
+  </tr>
+  <!--博物館の定休日-->
+  <tr>
+    <th>定休日</th>
+    <td><%= @museum.regular_holiday %></td>
+  </tr>
+  <!--博物館の入場料(大人)-->
+  <tr>
+    <th>入場料(大人)</th>
+    <td><%= @museum.entrance_fee.to_s(:delimited) %>円</td>
+  </tr>
+  <!--博物館のショップの有無-->
+  <tr>
+    <th>ショップ</th>
+    <td>
+      <% if @museum.shop == true %>
+        <span>あり</span>
+      <% else %>
+      　<span>なし</span>
+      <% end %>
+    </td>
+  </tr>
+  <!--博物館の公式HPの有無とURL-->
+  <tr>
+    <th>公式HP</th>
+    <td>
+      <% if @museum.url != "" %>
+        <%= link_to 'あり', @museum.url %>
+      <% else %>
+        <span>なし</span>
+      <% end %>
+    </td>
+  </tr>
+  <!--以下はログイン状態でないと表示しない-->
+  <% if user_signed_in? %>
+    <!--おすすめボタンと訪問済みボタン-->
+    <tr>
+      <th>
+        <% if @museum.recommended_by?(current_user) %>
+          <%= link_to 'おすすめはずす', museum_recommend_path(@museum.id, @museum.id), method: :delete %>
+        <% else %>
+          <%= link_to 'おすすめ', museum_recommends_path(@museum.id), method: :post %>
+        <% end %>
+      </th>
+      <th>
+        <% if @museum.visited_by?(current_user) %>
+          <%= link_to 'いったはずす', museum_visit_path(@museum.id, @museum.id), method: :delete %>
+        <% else %>
+          <%= link_to 'いった', museum_visits_path(@museum.id), method: :post %>
+        <% end %>
+      </th>
+    </tr>
+    <!--編集ボタン(誰でも編集可能)-->
+    <tr>
+  　  <th colspan="2"><%= link_to '編集する', edit_museum_path(@museum.id) %></th>
+  　</tr>
+  <% end %>
+  </table>
+
+<% if user_signed_in? %>
+  <!--コメント投稿フォーム-->
+  <%= form_with model:@post, url:museum_posts_path(@museum.id) , local:true do |f| %>
+    <%= f.label :title, 'タイトル' %>
+    <%= f.text_field :title %><br/>
+
+    <%= f.label :body, '本文' %>
+    <%= f.text_area :body %><br/>
+
+    <%= f.label :post_images_pictures, '写真' %>
+    <%= f.attachment_field :post_images_pictures, multiple: true %>
+
+    <%= f.label :how_to_visit, '訪問方法' %>
+    <% Post.how_to_visits.keys.each do |h| %>
+      <%= f.radio_button :how_to_visit, h %>
+      <%= f.label :how_to_visit, h %>
+    <% end %><br/>
+
+    <%= f.label :companion, '同伴者' %>
+    <% Post.companions.keys.each do |c| %>
+      <%= f.radio_button :companion, c %>
+      <%= f.label :companion, c %>
+    <% end %><br/>
+
+    <%= f.submit '投稿する！' %>
+  <% end %>
+<% end %>
+
+<% if user_signed_in? %>
+  <!--コメント表示-->
+  <% @posts.each do |post| %>
+    <%= link_to user_path(post.user.id) do %>
+      <%= attachment_image_tag post.user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png" %>
+    <% end %>
+    <%= post.user.name %>
+    <%= post.title %>
+    <%= post.body %>
+    <!--画像が投稿されていた場合に画像表示-->
+    <% if post.post_images.present? %>
+      <% post.post_images.each do |image| %>
+        <%= attachment_image_tag image, :picture, size:"40x40", format:"jpeg" %>
+      <% end %>
+    <% end %>
+    <%= post.how_to_visit %>
+    <%= post.companion %>
+    <% if post.user == current_user %>
+      <%= link_to '投稿編集', edit_museum_post_path(@museum.id, post.id) %>
+      <%= link_to '投稿削除', museum_post_path(@museum.id, post.id), method: :delete %>
+    <% else %>
+      <% if post.favorited_by?(current_user) %>
+        <%= link_to 'いいねはずすボタン', museum_post_favorite_path(@museum.id, post.id, post.id), method: :delete %>
+      <% else %>
+        <%= link_to 'いいねボタン', museum_post_favorites_path(@museum.id, post.id), method: :post %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

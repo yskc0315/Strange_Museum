@@ -1,0 +1,19 @@
+<% visitor = notification.visitor %>
+<% visited = notification.visited %>
+
+<%= notification.created_at.strftime('%Y/%m/%d') %>
+
+<% if visitor != current_user %>
+  <%= link_to user_path(visitor) do %>
+    <%= visitor.name %>さん
+  <% end %>
+  <span>が</span>
+<% end %>
+
+<% case notification.action %>
+  <% when 'favorite' then %>
+    <%= link_to 'あなたの投稿' %>
+    <span>にいいねしました！</span>
+  <% when 'follow' then %>
+    <span>あなたをフォローしました！</span>
+<% end %>

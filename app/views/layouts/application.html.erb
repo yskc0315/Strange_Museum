@@ -10,6 +10,25 @@
   </head>
 
   <body>
+    <header>
+      <% if user_signed_in? %>
+      <ul>
+        <li><%= link_to 'マイページ', user_path(current_user.id) %></li>
+        <li><%= link_to '博物館一覧', museums_path %></li>
+        <li><%= link_to '掲示板一覧' %></li>
+        <li><%= link_to 'Map' %></li>
+        <li><%= link_to 'About', about_path %></li>
+        <li><%= link_to 'ログアウト', destroy_user_session_path, method: :delete %></li>
+      </ul>
+      <% else %>
+      <ul>
+        <li><%= link_to '博物館一覧', museums_path %></li>
+        <li><%= link_to 'About', about_path %></li>
+        <li><%= link_to 'ログイン', new_user_session_path %></li>
+        <li><%= link_to 'ユーザー登録', new_user_registration_path %></li>
+      </ul>
+      <% end %>
+    </header>
     <%= yield %>
   </body>
 </html>

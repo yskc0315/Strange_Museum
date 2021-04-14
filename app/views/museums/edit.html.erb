@@ -1,0 +1,37 @@
+<%= form_with model:@museum, local:true do |f| %>
+  <%= f.label :appearance_image, '外観イメージ' %>
+  <%= f.attachment_field :appearance_image %><br/>
+
+  <%= f.label :name, '博物館名' %>
+  <%= f.text_field :name %><br/>
+
+  <%= f.label :genre_id, 'ジャンル' %>
+  <%= f.collection_select :genre_id, Genre.all, :id, :name, include_blank: "--選択してください--" %><br/>
+
+  <%= f.label :'住所' %>
+  <%= f.select :prefecture, Museum.prefectures.keys %>
+  <%= f.text_field :address, placeholder:'県名以降を入力してください' %><br/>
+
+  <%= f.label :'営業時間' %>
+  <%= f.time_field :opening_time %> ～ <%= f.time_field :closing_time %><br/>
+
+  <%= f.label :regular_holiday, '定休日' %>
+  <% @regular_holidays.each do |r| %>
+    <%= f.check_box :regular_holiday, {multiple: true}, r, nil %>
+    <%= f.label :regular_holiday, r %>
+  <% end %><br/>
+
+  <%= f.label :entrance_fee, '入場料' %>
+  <%= f.text_field :entrance_fee %> 円<br/>
+
+  <%= f.label :shop, 'ショップ' %>
+  <%= f.radio_button :shop, true %>
+  <%= f.label :shop, 'あり', value: true %>
+  <%= f.radio_button :shop, false %>
+  <%= f.label :shop, 'なし', value: false %><br/>
+
+  <%= f.label :url, '公式HP' %>
+  <%= f.text_field :url, placeholder:'URLを入力してください' %><br/>
+
+  <%= f.submit '変更する！' %>
+<% end %>

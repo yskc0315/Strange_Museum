@@ -1,0 +1,23 @@
+<%= form_with model:@post, url:museum_post_path(@post.museum.id, @post.id), local:true do |f| %>
+  <%= f.label :title, 'タイトル' %>
+  <%= f.text_field :title %><br/>
+
+  <%= f.label :body, '本文' %>
+  <%= f.text_area :body %><br/>
+
+  <%= f.label :post_images_pictures, '写真' %>
+  <%= f.attachment_field :post_images_pictures, multiple: true %>
+
+  <%= f.label :how_to_visit, '訪問方法' %>
+  <% Post.how_to_visits.keys.each do |h| %>
+    <%= f.radio_button :how_to_visit, h %>
+    <%= f.label :how_to_visit, h %>
+  <% end %><br/>
+
+  <%= f.label :companion, '同伴者' %>
+  <% Post.companions.keys.each do |c| %>
+    <%= f.radio_button :companion, c %>
+    <%= f.label :companion, c %>
+  <% end %><br/>
+  <%= f.submit '変更する！' %>
+<% end %>

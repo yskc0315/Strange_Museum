@@ -1,0 +1,29 @@
+<% @created_museums.each do |museum| %>
+  <% if user_signed_in? %>
+    <table>
+      <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+      <tr><%= link_to museum.user.name, user_path(museum.user.id) %>さんが</tr>
+      <tr><%= link_to museum.name, museum_path(museum.id) %>を投稿しました！</tr>
+    </table>
+  <% else %>
+    <table>
+      <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+      <tr><%= link_to museum.name, museum_path(museum.id) %>が投稿されました!</tr>
+    </table>
+  <% end %>
+<% end %>
+
+<% @updated_museums.each do |museum| %>
+  <% if user_signed_in? %>
+    <table>
+      <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+      <tr><%= link_to museum.user.name, user_path(museum.user.id) %>さんが</tr>
+      <tr><%= link_to museum.name, museum_path(museum.id) %>を編集しました！</tr>
+    </table>
+  <% else %>
+    <table>
+      <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+      <tr><%= link_to museum.name, museum_path(museum.id) %>が編集されました!</tr>
+    </table>
+  <% end %>
+<% end %>

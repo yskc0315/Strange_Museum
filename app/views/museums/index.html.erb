@@ -1,0 +1,37 @@
+<table>
+  <tr>
+    <th></th>
+    <th>所在地</th>
+    <th colspan="2">施設名</th>
+    <th>ジャンル</th>
+    <th>訪問人数</th>
+    <th>おすすめ</th>
+    <th>コメント数</th>
+    <th>写真数</th>
+  </tr>
+  <% @museums.each do |museum| %>
+  <tr>
+    <td>
+      <% if museum.recommended_by?(current_user) %>
+        ☆
+      <% elsif museum.visited_by?(current_user) %>
+        👨
+      <% end %>
+    </td>
+    <td><%= museum.prefecture %></td>
+    <td><%= attachment_image_tag museum, :appearance_image, size:"40x40", format:"jpeg" %></td>
+    <td><%= link_to museum.name, museum_path(museum.id) %></td>
+    <td><%= museum.genre.name %></td>
+    <td><%= museum.visits.count %>人</td>
+    <td><%= museum.recommends.count %>人</td>
+    <td><%= museum.posts.count %>件</td>
+    <td>
+      <% sum = 0 %>
+      <% museum.posts.each do |post| %>
+        <% sum += post.post_images.count %>
+      <% end %>
+      <%= sum %> 枚
+    </td>
+  </tr>
+  <% end %>
+</table>

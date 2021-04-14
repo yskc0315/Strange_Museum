@@ -1,0 +1,12 @@
+<%= form_with model:@user, local:true do |f| %>
+  <%= f.label :profile_image, 'アイコン画像' %>
+  <%= f.attachment_field :profile_image %><br/>
+
+  <%= f.label :name, 'ニックネーム' %>
+  <%= f.text_field :name %><br/>
+
+  <%= f.label :introduction, '自己紹介' %>
+  <%= f.text_area :introduction %><br/>
+
+  <%= f.submit 'プロフィール更新！' %>
+<% end %>

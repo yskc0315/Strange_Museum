@@ -1,0 +1,5 @@
+class AddUserIdToMuseums < ActiveRecord::Migration[5.2]
+  def change
+    add_column :museums, :user_id, :integer
+  end
+end

@@ -1,0 +1,193 @@
+<% if @user != current_user %>
+  <h1><%= @user.name %>さんのページです</h1>
+<% else %>
+  <h1>マイページ</h1>
+<% end %>
+
+<!--ユーザー詳細画面のサイドバー：基本情報を表示-->
+<table>
+  <tr>
+    <th colspan="2"><%= attachment_image_tag @user, :profile_image, size:"80x80", format:"jpeg", fallback:"no_image.png" %></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th colspan="2"><%= @user.name %></th>
+    <th></th>
+  </tr>
+  <tr>
+    <th></th>
+    <td></td>
+  </tr>
+  <tr>
+    <th>行った</th>
+    <td><%= @user.visits.count %> 件</td>
+  </tr>
+  <tr>
+    <th>おすすめ</th>
+    <td><%= @user.recommends.count %> 件</td>
+  </tr>
+  <% if @user.introduction != nil %>
+    <tr>
+      <th colspan="2">自己紹介</th>
+      <td></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td colspan="2"><%= @user.introduction %></td>
+    <td></td>
+  </tr>
+  <tr>
+    <th colspan="2">
+      <% if @user != current_user %>
+        <% if @user.followed_by?(current_user) %>
+          <%= link_to 'フォロー解除', user_relation_path(@user.id, @user.id), method: :delete %>
+        <% else %>
+          <%= link_to 'フォロー', user_relations_path(@user.id), method: :post %>
+        <% end %>
+      <% end %>
+    </th>
+    <td></td>
+  </tr>
+  <% if @user == current_user %>
+    <tr>
+      <th colspan="2">
+        <%= link_to 'プロフィール編集する', edit_user_path(current_user) %>
+      </th>
+      <td></td>
+    </tr>
+  <% end %>
+</table>
+
+<!--自分以外のユーザーには通知が見えないように-->
+<% if @user == current_user %>
+  <!--各種通知表示-->
+  <% notifications = @notifications.where.not(visitor_id: current_user.id) %>
+  <% if notifications.exists? %>
+    <%= render notifications %>
+  <% else %>
+    <p>通知はありません</p>
+  <% end %>
+
+  <% @created_museums.each do |museum| %>
+    <% if user_signed_in? %>
+      <table>
+        <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+        <tr>
+          <%= link_to user_path(museum.user.id) do %>
+            <%= museum.user.name %>さん
+          <% end %>
+          が
+        </tr>
+        <tr><%= link_to museum.name, museum_path(museum.id) %>を投稿しました！</tr>
+      </table>
+    <% else %>
+      <table>
+        <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+        <tr><%= link_to museum.name, museum_path(museum.id) %>が投稿されました!</tr>
+      </table>
+    <% end %>
+  <% end %>
+
+  <% @updated_museums.each do |museum| %>
+    <% if user_signed_in? %>
+      <table>
+        <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+        <tr>
+          <%= link_to user_path(museum.user.id) do %>
+            <%= museum.user.name %>さん
+          <% end %>
+          が
+        </tr>
+        <tr><%= link_to museum.name, museum_path(museum.id) %>を編集しました！</tr>
+      </table>
+    <% else %>
+      <table>
+        <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+        <tr><%= link_to museum.name, museum_path(museum.id) %>が編集されました!</tr>
+      </table>
+    <% end %>
+  <% end %>
+<% end %>
+
+<!--行った：訪問済み(行ったボタンを押した)施設の一覧表示-->
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th>施設名</th>
+    <th>所在県</th>
+    <th>ジャンル</th>
+    <th>行った</th>
+    <th>おすすめ</th>
+  </tr>
+  <% @museums.each do |museum| %>
+    <% if museum.visited_by?(@user) %>
+    <tr>
+      <td>
+        <% if museum.recommended_by?(@user) %>
+          ☆
+        <% elsif museum.visited_by?(current_user) %>
+          👨
+        <% end %>
+      </td>
+      <td><%= attachment_image_tag museum, :appearance_image, size:"40x40", format:"jpeg" %></td>
+      <td>
+        <%= link_to museum_path(museum.id) do %>
+          <%= museum.name %>
+        <% end %>
+      </td>
+      <td><%= museum.prefecture %></td>
+      <td><%= museum.genre.name %></td>
+      <td><%= museum.visits.count %> 人</td>
+      <td><%= museum.recommends.count %> 人</td>
+    </tr>
+    <% end %>
+  <% end %>
+</table>
+
+<!--コメント：コメントの一覧表示-->
+<% @posts.each do |post| %>
+  <%= post.museum.name %>
+  <%= post.title %>
+  <%= post.body %>
+  <!--画像が投稿されていた場合に画像表示-->
+  <% if post.post_images.present? %>
+    <% post.post_images.each do |image| %>
+      <%= attachment_image_tag image, :picture, size:"40x40", format:"jpeg" %>
+    <% end %>
+  <% end %>
+  <%= post.how_to_visit %>
+  <%= post.companion %>
+  <% if post.user == current_user %>
+    <%= link_to '投稿編集', edit_museum_post_path(post.museum.id, post.id) %>
+    <%= link_to '投稿削除', museum_post_path(post.museum.id, post.id), method: :delete %>
+  <% end %>
+<% end %>
+
+<!--アルバム：投稿した写真の一覧表示-->
+<% @museums.each do |museum| %>
+  <% if museum.posted_by?(@user) %>
+    <%= museum.name %>
+    <% museum.post_imaged(@user).each do |post| %>
+      <% post.post_images.each do |image| %>
+        <%= attachment_image_tag image, :picture, size:"80x80", format:"jpeg" %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<!--フォロー・フォロワー：フォローしている人、されている人の一覧表示-->
+<div>
+  <div>
+    <h4>フォロー</h4>
+    <% @followings.each do |following| %>
+      <%= following.name %>
+    <% end %>
+  </div>
+  <div>
+    <h4>フォロワー</h4>
+    <% @followeds.each do |followed| %>
+      <%= followed.name %>
+    <% end %>
+  </div>
+</div>
