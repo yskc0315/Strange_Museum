@@ -15,12 +15,20 @@ class User < ApplicationRecord
   has_many :visits
   has_many :favorites
   has_many :posts
+  has_many :forum_posts
+  has_many :forum_users
+  has_many :forums, through: :forum_users
   has_many :museums
   has_many :active_notifications, class_name: "Notification", foreign_key: :visitor_id, dependent: :destroy
   has_many :passive_notifications, class_name: "Notification", foreign_key: :visited_id, dependent: :destroy
 
   def followed_by?(user)
     passive_relations.find_by(following_id: user.id).present?
+  end
+
+  def forum_host?(user)
+    forums = Forum.where(lock: false)
+    forums.where(user_id: user.id).exists?
   end
 
   def create_notification_follow!(current_user)

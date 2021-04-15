@@ -35,3 +35,49 @@
 
   <%= f.submit '登録する！' %>
 <% end %>
+
+
+<input id="address" type="textbox" placeholder="住所を入力">
+<input type="button" value="探す" onclick="codeAddress()"><br/>
+
+<div id='map'></div>
+
+<style>
+#map {
+  height: 100px;
+  width: 100px;
+}
+</style>
+
+<script>
+let map
+
+function initMap(){
+  geocoder = new google.maps.Geocoder()
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat:34.9218969, lng:139.12026},
+    zoom: 8,
+  });
+}
+
+let geocoder
+
+function codeAddress(){
+  let inputAddress = document.getElementById('address').value;
+
+  geocoder.geocode( { 'address': inputAddress}, function(results, status) {
+    if (status == 'OK') {
+      map.setCenter(results[0].geometry.location);
+      var marker = new google.maps.Marker({
+          map: map,
+          position: results[0].geometry.location
+      });
+      display.textContent = "検索結果：" + results[ 0 ].geometry.location
+      alert('検索結果が見つかりました');
+    } else {
+      alert('該当する結果がありませんでした：' + status);
+    }
+  });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['API_KEY']%>&callback=initMap" async defer></script>
