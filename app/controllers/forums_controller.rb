@@ -1,4 +1,5 @@
 class ForumsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_forum, only:[:show, :destroy, :lock]
 
   def create

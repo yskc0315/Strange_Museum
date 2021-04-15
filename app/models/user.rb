@@ -12,7 +12,9 @@ class User < ApplicationRecord
   has_many :passive_relations, class_name: "Relation", foreign_key: :followed_id, dependent: :destroy
   has_many :followeds, through: :passive_relations, source: :following
   has_many :recommends
+  has_many :recommended_museums, through: :recommends, source: :museum
   has_many :visits
+  has_many :visited_museums, through: :visits, source: :museum
   has_many :favorites
   has_many :posts
   has_many :forum_posts
@@ -31,6 +33,14 @@ class User < ApplicationRecord
     forums.where(user_id: user.id).exists?
   end
 
+  def self.looks(searches, words)
+    if searches == "perfect_match"
+      @user = User.where("name LIKE ?", "#{words}")
+    elsif searches == "partial_match"
+      @user = User.where("name LIKE ?", "%#{words}%")
+    end
+  end
+
   def create_notification_follow!(current_user)
     temp = Notification.where(["visitor_id = ? and visited_id = ? and action = ?", current_user.id, id, 'follow'])
     if temp.blank?
@@ -43,6 +53,10 @@ class User < ApplicationRecord
       end
       notification.save if notification.valid?
     end
+  end
+
+  def active_for_authentication?
+    super && (self.is_deleted == false)
   end
 
 end

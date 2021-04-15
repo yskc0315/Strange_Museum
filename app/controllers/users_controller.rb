@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :user_set, only:[:show, :edit, :update]
+  before_action :user_set, only:[:show, :edit, :update, :withdraw]
 
   def index
     @users = User.all
@@ -27,6 +27,12 @@ class UsersController < ApplicationController
   def update
     @user.update(params_user)
     redirect_to user_path(current_user)
+  end
+
+  def withdraw
+    @user.update(is_deleted: true)
+    reset_session
+    redirect_to root_path
   end
 
   private

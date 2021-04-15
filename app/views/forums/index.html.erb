@@ -1,26 +1,28 @@
 <% @forums.each do |forum| %>
-  <% if forum.lock == true %>
-    カギ付き
-  <% end %>
-  <%= forum.title %>
-  <%= forum.body %>
-  <%= forum.when %>
-  <%= forum.where %>
-  <%= forum.users.count %>人が参加中
-  <% if forum.lock == true %>
-    <% if forum.membered?(current_user) %>
+  <% if forum.user.is_deleted == false %>
+    <% if forum.lock == true %>
+      カギ付き
+    <% end %>
+    <%= forum.title %>
+    <%= forum.body %>
+    <%= forum.when %>
+    <%= forum.where %>
+    <%= forum.users.count %>人が参加中
+    <% if forum.lock == true %>
+      <% if forum.membered?(current_user) %>
+        <%= link_to '参加する！', forum_path(forum.id) %>
+      <% end %>
+    <% else %>
       <%= link_to '参加する！', forum_path(forum.id) %>
     <% end %>
-  <% else %>
-    <%= link_to '参加する！', forum_path(forum.id) %>
-  <% end %>
-  <% if forum.user_id == current_user.id %>
-    <% if forum.lock == false %>
-      <%= link_to '鍵をかける', forum_lock_path(forum.id), method: :post %>
-    <% else %>
-      <%= link_to '鍵をはずす', forum_lock_path(forum.id), method: :post %>
+    <% if forum.user_id == current_user.id %>
+      <% if forum.lock == false %>
+        <%= link_to '鍵をかける', forum_lock_path(forum.id), method: :post %>
+      <% else %>
+        <%= link_to '鍵をはずす', forum_lock_path(forum.id), method: :post %>
+      <% end %>
+      <%= link_to '削除', forum_path(forum.id), method: :delete %>
     <% end %>
-    <%= link_to '削除', forum_path(forum.id), method: :delete %>
   <% end %>
 <% end %>
 

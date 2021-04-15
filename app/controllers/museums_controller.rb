@@ -35,6 +35,20 @@ class MuseumsController < ApplicationController
     redirect_to museum_path(@museum.id)
   end
 
+  def sort
+    if params[:sort] == "prefecture"
+      @museums = Museum.all.order(:prefecture)
+    elsif params[:sort] == "recommend"
+      @museums = Museum.all.sort{|a,b| b.recommend_users.count <=> a.recommend_users.count}
+    elsif params[:sort] == "visitor"
+      @museums = Museum.all.sort{|a,b| b.visit_users.count <=> a.visit_users.count}
+    elsif params[:sort] == "comment"
+      @museums = Museum.all.sort{|a,b| b.posts.count <=> a.posts.count}
+    elsif params[:sort] == "picture"
+      @museums = Museum.all.sort{|a,b| b.post_images.count <=> a.post_images.count}
+    end
+  end
+
   private
 
   def params_museum

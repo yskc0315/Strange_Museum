@@ -3,8 +3,11 @@ class Museum < ApplicationRecord
 
 # アソシエーション
   has_many :recommends
+  has_many :recommend_users, through: :recommends, source: :user
   has_many :visits
+  has_many :visit_users, through: :visits, source: :user
   has_many :posts
+  has_many :post_images, through: :posts
   has_many :notifications
   belongs_to :user
   belongs_to :genre
@@ -49,6 +52,14 @@ class Museum < ApplicationRecord
 
   def post_imaged(user)
     posts.where(user_id: user.id)
+  end
+
+  def self.looks(searches, words)
+    if searches == "perfect_match"
+      @museum = Museum.where("name LIKE ?", "#{words}")
+    elsif searches == "partial_match"
+      @museum = Museum.where("name LIKE ?", "%#{words}%")
+    end
   end
 
 end
