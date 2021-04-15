@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   resources :users, only:[:index, :show, :edit, :update] do
     resources :relations, only:[:create, :destroy]
   end
+  put '/users/:id/withdraw' => 'users#withdraw', as: 'user_withdraw'
 
+  get 'museums/sort' => 'museums#sort'
   resources :museums do
     resources :posts, only:[:create, :edit, :update, :destroy] do
       resources :favorites, only:[:create, :destroy]
@@ -24,6 +26,8 @@ Rails.application.routes.draw do
     resources :forum_posts, only:[:create]
   end
   post 'forum/:id/lock' => 'forums#lock', as: 'forum_lock'
+
+  get 'search' => 'searches#search'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

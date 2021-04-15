@@ -111,28 +111,30 @@
 <% if user_signed_in? %>
   <!--コメント表示-->
   <% @posts.each do |post| %>
-    <%= link_to user_path(post.user.id) do %>
-      <%= attachment_image_tag post.user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png" %>
-    <% end %>
-    <%= post.user.name %>
-    <%= post.title %>
-    <%= post.body %>
-    <!--画像が投稿されていた場合に画像表示-->
-    <% if post.post_images.present? %>
-      <% post.post_images.each do |image| %>
-        <%= attachment_image_tag image, :picture, size:"40x40", format:"jpeg" %>
+  　<% if post.user.is_deleted == false %>
+      <%= link_to user_path(post.user.id) do %>
+        <%= attachment_image_tag post.user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png" %>
       <% end %>
-    <% end %>
-    <%= post.how_to_visit %>
-    <%= post.companion %>
-    <% if post.user == current_user %>
-      <%= link_to '投稿編集', edit_museum_post_path(@museum.id, post.id) %>
-      <%= link_to '投稿削除', museum_post_path(@museum.id, post.id), method: :delete %>
-    <% else %>
-      <% if post.favorited_by?(current_user) %>
-        <%= link_to 'いいねはずすボタン', museum_post_favorite_path(@museum.id, post.id, post.id), method: :delete %>
+      <%= post.user.name %>
+      <%= post.title %>
+      <%= post.body %>
+      <!--画像が投稿されていた場合に画像表示-->
+      <% if post.post_images.present? %>
+        <% post.post_images.each do |image| %>
+          <%= attachment_image_tag image, :picture, size:"40x40", format:"jpeg" %>
+        <% end %>
+      <% end %>
+      <%= post.how_to_visit %>
+      <%= post.companion %>
+      <% if post.user == current_user %>
+        <%= link_to '投稿編集', edit_museum_post_path(@museum.id, post.id) %>
+        <%= link_to '投稿削除', museum_post_path(@museum.id, post.id), method: :delete %>
       <% else %>
-        <%= link_to 'いいねボタン', museum_post_favorites_path(@museum.id, post.id), method: :post %>
+        <% if post.favorited_by?(current_user) %>
+          <%= link_to 'いいねはずすボタン', museum_post_favorite_path(@museum.id, post.id, post.id), method: :delete %>
+        <% else %>
+          <%= link_to 'いいねボタン', museum_post_favorites_path(@museum.id, post.id), method: :post %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>

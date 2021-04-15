@@ -1,4 +1,5 @@
 class RecommendsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_museum, only:[:create, :destroy]
 
   def create

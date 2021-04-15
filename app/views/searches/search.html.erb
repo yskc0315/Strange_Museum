@@ -1,0 +1,12 @@
+<% if @range == "User" %>
+  <% @users.each do |user| %>
+    <% if user.is_deleted == false %>
+      <%= user.name %>
+    <% end %>
+  <% end %>
+<% elsif @range == "Museum" %>
+  <% @museums.each do |museum| %>
+    <%= museum.name %>
+    <%= museum.user.name %>
+  <% end %>
+<% end %>

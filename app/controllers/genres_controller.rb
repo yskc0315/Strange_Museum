@@ -1,4 +1,6 @@
 class GenresController < ApplicationController
+  before_action :authenticate_user!
+
   def create
     genre = Genre.new(params_genre)
     genre.save

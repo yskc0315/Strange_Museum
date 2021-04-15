@@ -5,7 +5,11 @@
 
 <% if visitor != current_user %>
   <%= link_to user_path(visitor) do %>
-    <%= visitor.name %>さん
+    <% if visitor.is_deleted == false %>
+      <%= visitor.name %>さん
+    <% else %>
+      退会済みユーザー
+    <% end %>
   <% end %>
   <span>が</span>
 <% end %>

@@ -1,4 +1,5 @@
 class Forum < ApplicationRecord
+  belongs_to :user
   has_many :forum_users
   has_many :users, through: :forum_users
   has_many :forum_posts
