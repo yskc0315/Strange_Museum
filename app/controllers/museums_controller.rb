@@ -21,7 +21,7 @@ class MuseumsController < ApplicationController
   end
 
   def index
-    @museums = Museum.all
+    @museums = Museum.all.order(:prefecture)
   end
 
   def edit
@@ -39,8 +39,8 @@ class MuseumsController < ApplicationController
 
   def params_museum
     params.require(:museum).permit(
-      :appearance_image, :name, :genre_id, :prefecture, :address, :opening_time,
-      :closing_time, :entrance_fee, :shop, :url, :regular_holiday => []
+      :appearance_image, :name, :genre_id, :prefecture, :address, :latitude, :longitude,
+      :opening_time, :closing_time, :entrance_fee, :shop, :url, :regular_holiday => []
       )
   end
 

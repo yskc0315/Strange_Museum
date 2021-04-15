@@ -1,0 +1,45 @@
+<% @forums.each do |forum| %>
+  <% if forum.lock == true %>
+    カギ付き
+  <% end %>
+  <%= forum.title %>
+  <%= forum.body %>
+  <%= forum.when %>
+  <%= forum.where %>
+  <%= forum.users.count %>人が参加中
+  <% if forum.lock == true %>
+    <% if forum.membered?(current_user) %>
+      <%= link_to '参加する！', forum_path(forum.id) %>
+    <% end %>
+  <% else %>
+    <%= link_to '参加する！', forum_path(forum.id) %>
+  <% end %>
+  <% if forum.user_id == current_user.id %>
+    <% if forum.lock == false %>
+      <%= link_to '鍵をかける', forum_lock_path(forum.id), method: :post %>
+    <% else %>
+      <%= link_to '鍵をはずす', forum_lock_path(forum.id), method: :post %>
+    <% end %>
+    <%= link_to '削除', forum_path(forum.id), method: :delete %>
+  <% end %>
+<% end %>
+
+<%= form_with model:@forum, local:true do |f| %>
+  <%= f.label :title, 'タイトル' %>
+  <%= f.text_field :title %>
+
+  <%= f.label :where, 'どこへ' %>
+  <%= f.text_field :where %>
+
+  <%= f.label :when %>
+  <%= f.label :date, '日時指定' %>
+  <%= f.radio_button :date, 'decided', checked: true %>
+  <%= f.date_field :when %>
+  <%= f.label :date, '未定' %>
+  <%= f.radio_button :date, 'undecided' %>
+
+  <%= f.label :body %>
+  <%= f.text_area :body %>
+
+  <%= f.submit '掲示板を作成する' %>
+<% end %>

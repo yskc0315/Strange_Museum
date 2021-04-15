@@ -1,0 +1,26 @@
+<% if @forum.lock == true %>
+  かぎ付き
+<% end %>
+<%= @forum.title %>
+<%= @forum.body %>
+
+<% @forum_posts.each do |forum_post| %>
+  <%= attachment_image_tag forum_post.user, :profile_image, size:'40x40', format: 'jpeg' %>
+  <%= forum_post.content %>
+<% end %>
+
+<div>
+  <p>めんばー</p>
+  <% @forum.users.each do |user| %>
+    <% if @forum.user_id == user.id %>
+      ほすと
+    <% end %>
+    <%= attachment_image_tag user, :profile_image, size: '40x40', format: 'jpeg' %>
+    <%= user.name %>
+  <% end %>
+</div>
+
+<%= form_with model:@forum_post, url:forum_forum_posts_path(@forum), local:true do |f| %>
+  <%= f.text_area :content %>
+  <%= f.submit '送信' %>
+<% end %>

@@ -10,11 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_13_124550) do
+ActiveRecord::Schema.define(version: 2021_04_15_012500) do
 
   create_table "favorites", force: :cascade do |t|
     t.integer "user_id"
     t.integer "post_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "forum_posts", force: :cascade do |t|
+    t.integer "forum_id", null: false
+    t.integer "user_id", null: false
+    t.text "message", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "forum_users", force: :cascade do |t|
+    t.integer "forum_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "forums", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "title", null: false
+    t.text "body"
+    t.string "where"
+    t.string "when"
+    t.boolean "lock", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

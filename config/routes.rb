@@ -20,5 +20,10 @@ Rails.application.routes.draw do
 
   resources :genres, only:[:create, :index, :destroy]
 
+  resources :forums, only:[:create, :index, :show, :destroy] do
+    resources :forum_posts, only:[:create]
+  end
+  post 'forum/:id/lock' => 'forums#lock', as: 'forum_lock'
+
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
