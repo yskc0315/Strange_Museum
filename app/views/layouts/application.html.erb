@@ -28,11 +28,13 @@
         <li><%= link_to 'ユーザー登録', new_user_registration_path %></li>
       </ul>
       <% end %>
-      <%= form_with url: search_path, local: true, method: :get do |f| %>
-        <%= f.select :range, options_for_select([["ユーザー","User"],["博物館","Museum"]]) %>
-        <%= f.select :search, options_for_select([["完全一致","perfect_match"],["部分一致","partial_match"]]) %>
-        <%= f.text_field :word %>
-        <%= f.submit '検索する！' %>
+      <% if user_signed_in? %>
+        <%= form_with url: search_path, local: true, method: :get do |f| %>
+          <%= f.select :range, options_for_select([["ユーザー","User"],["博物館","Museum"]]) %>
+          <%= f.select :search, options_for_select([["完全一致","perfect_match"],["部分一致","partial_match"]]) %>
+          <%= f.text_field :word %>
+          <%= f.submit '検索する！' %>
+        <% end %>
       <% end %>
     </header>
     <%= yield %>
