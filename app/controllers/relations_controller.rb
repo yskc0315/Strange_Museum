@@ -12,6 +12,6 @@ class RelationsController < ApplicationController
   def destroy
     follow = current_user.active_relations.find_by(followed_id: params[:user_id])
     follow.destroy
-    redirect_to users_path
+    redirect_back(fallback_location: root_path)
   end
 end

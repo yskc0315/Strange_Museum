@@ -2,13 +2,13 @@ class Museum < ApplicationRecord
   attachment :appearance_image
 
 # アソシエーション
-  has_many :recommends
+  has_many :recommends, dependent: :destroy
   has_many :recommend_users, through: :recommends, source: :user
-  has_many :visits
+  has_many :visits, dependent: :destroy
   has_many :visit_users, through: :visits, source: :user
-  has_many :posts
+  has_many :posts, dependent: :destroy
   has_many :post_images, through: :posts
-  has_many :notifications
+  has_many :notifications, dependent: :destroy
   belongs_to :user
   belongs_to :genre
 
@@ -46,11 +46,7 @@ class Museum < ApplicationRecord
     visits.where(user_id: user.id).exists?
   end
 
-  def posted_by?(user)
-    posts.where(user_id: user.id).exists?
-  end
-
-  def post_imaged(user)
+  def posted_by(user)
     posts.where(user_id: user.id)
   end
 

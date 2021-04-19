@@ -1,6 +1,6 @@
 class ForumsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_forum, only:[:show, :destroy, :lock]
+  before_action :set_forum, only:[:show, :destroy, :chat, :lock]
 
   def create
     forum = Forum.new(forum_params)
@@ -11,16 +11,19 @@ class ForumsController < ApplicationController
         forum.when = params[:forum][:when]
       end
     forum.save
-    redirect_back(fallback_location: root_path)
+    redirect_to forum_chat_path(forum.id)
   end
 
   def index
-    @forums = Forum.all
+    @forums = Forum.all.order(id:"DESC")
     @forum = Forum.new
     @forum.users << current_user
   end
 
   def show
+  end
+
+  def chat
     if !@forum.users.include?(current_user)
       @forum.users << current_user
     end

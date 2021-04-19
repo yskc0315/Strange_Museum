@@ -1,96 +1,78 @@
+<div class="page-title d-flex">
+  <h3>
+    <i class="fas fa-landmark"> 博物館一覧</i>
+  </h3>
+  <p class="mr-3 mt-2">
+    (<% if @sort == "prefecture" %>
+      都道府県順
+    <% elsif @sort == "visitor" %>
+      訪問数が多い順
+    <% elsif @sort == "recommend" %>
+      おすすめが多い順
+    <% elsif @sort == "comment" %>
+      コメント数が多い順
+    <% elsif @sort == "picture" %>
+      写真数が多い順
+    <% end %>)
+  </p>
+  <p><%= link_to '新規登録', new_museum_path, class:"btn btn-success" %></p>
+</div>
+
 <%= form_with url: museums_sort_path, method: :get, local: true do |f| %>
   <%= f.select :sort,
   [['都道府県順','prefecture'],
    ['訪問数が多い順','visitor'],
    ['おすすめが多い順','recommend'],
    ['コメント数が多い順','comment'],
-   ['写真数が多い順','picture'],
-   ['ジャンル順','genre']]
+   ['写真数が多い順','picture']]
    %>
    <%= f.submit '並びかえる' %>
 <% end %>
 
-<table>
-  <tr>
-    <th></th>
-    <th>所在地</th>
-    <th colspan="2">施設名</th>
-    <th>ジャンル</th>
-    <th>訪問人数</th>
-    <th>おすすめ</th>
-    <th>コメント数</th>
-    <th>写真数</th>
-    <th><%= link_to '＋', new_museum_path %></th>
-  </tr>
-  <% @museums.each do |museum| %>
-  <tr>
-    <td>
-      <% if user_signed_in? %>
-        <% if museum.recommended_by?(current_user) %>
-          ☆
-        <% elsif museum.visited_by?(current_user) %>
-          👨
-        <% end %>
+<div class="row">
+  <table class="table">
+    <thead>
+      <tr align="center">
+        <th></th>
+        <th></th>
+        <th>所在地</th>
+        <th>ジャンル</th>
+        <th>訪問人数</th>
+        <th>おすすめ</th>
+        <th>コメント</th>
+        <th>写真数</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @museums.each do |museum| %>
+      <tr align="center">
+        <td>
+          <% if user_signed_in? %>
+            <% if museum.recommended_by?(current_user) %>
+              <i class="fas fa-star star"></i>
+            <% elsif museum.visited_by?(current_user) %>
+              <i class="fas fa-door-open"></i>
+            <% end %>
+          <% end %>
+        </td>
+        <td align="left">
+          <%= attachment_image_tag museum, :appearance_image, size:"40x40", format:"jpeg" %>
+          <%= link_to museum.name, museum_path(museum.id) %>
+        </td>
+        <td><%= museum.prefecture %></td>
+        <td><%= museum.genre.name %></td>
+        <td><%= museum.visits.count %>人</td>
+        <td><%= museum.recommends.count %>人</td>
+        <td><%= museum.posts.count %>件</td>
+        <td>
+          <% sum = 0 %>
+          <% museum.posts.each do |post| %>
+            <% sum += post.post_images.count %>
+          <% end %>
+          <%= sum %> 枚
+        </td>
+      </tr>
       <% end %>
-    </td>
-    <td><%= museum.prefecture %></td>
-    <td><%= attachment_image_tag museum, :appearance_image, size:"40x40", format:"jpeg" %></td>
-    <td><%= link_to museum.name, museum_path(museum.id) %></td>
-    <td><%= museum.genre.name %></td>
-    <td><%= museum.visits.count %>人</td>
-    <td><%= museum.recommends.count %>人</td>
-    <td><%= museum.posts.count %>件</td>
-    <td>
-      <% sum = 0 %>
-      <% museum.posts.each do |post| %>
-        <% sum += post.post_images.count %>
-      <% end %>
-      <%= sum %> 枚
-    </td>
-  </tr>
-  <% end %>
-</table>
-
-
-<!--地図表示-->
-<div id='map'></div>
-  <style>
-    #map {
-      height: 500px ;
-      width: 500px ;
-    }
-  </style>
-<script>
-  let map
-    function initMap(){
-      geocoder = new google.maps.Geocoder()
-
-      map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 38.258595, lng:137.6850225},
-          zoom: 5,
-      });
-
-      <% @museums.each do |m| %>
-          (function(){
-          var contentString = "<%= m.name %>";
-
-          var marker = new google.maps.Marker({
-              position:{lat: <%= m.latitude %>, lng: <%= m.longitude %>},
-              map: map,
-              title: contentString
-          });
-          // 情報ウィンドウ(吹き出し)の定義
-          // 投稿の詳細ページへのリンクも
-          var infowindow = new google.maps.InfoWindow({
-          position: {lat: <%= m.latitude %>, lng: <%= m.longitude %>},
-          content: contentString
-          });
-          // クリックしたときに情報ウィンドウを表示
-          marker.addListener('click', function() {
-          infowindow.open(map, marker);
-          });
-          })();
-      <% end %>
-      }
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['API_KEY']%>&callback=initMap" async defer></script>
+    </tbody>
+  </table>
+</div>

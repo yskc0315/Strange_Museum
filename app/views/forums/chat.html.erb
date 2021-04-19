@@ -1,0 +1,93 @@
+<div class="page-title">
+  <h3>
+    <i class="fas fa-comments"> チャットルーム</i>
+  </h3>
+</div>
+
+<% if @forum.user.is_deleted == false %>
+  <div class="row">
+    <div class="col-md-4">
+      <div>
+        <h4><strong>参加メンバー</strong></h4>
+          <table>
+            <% @forum.users.each do |user| %>
+              <tr>
+                <td>
+                  <% if @forum.user_id == user.id %>
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    作成者
+                  <% end %>
+                </td>
+                <th>
+                  <%= attachment_image_tag user, :profile_image, size: '40x40', format: 'jpeg', fallback:"no_image.png" %>
+                  <%= user.name %>
+                </th>
+              </tr>
+            <% end %>
+          </table>
+      </div>
+
+      <table class="table">
+        <tr>
+          <th>
+            <% if @forum.lock == true %>
+              <i class="fas fa-lock fa-lg key"></i>
+            <% else %>
+              <i class="fas fa-lock-open fa-lg unlocked-key"></i>
+            <% end %>
+          </th>
+          <td></td>
+        </tr>
+        <tr>
+          <td>タイトル</td>
+          <th><%= @forum.title %></th>
+        </tr>
+        <tr>
+          <td>ひとこと</td>
+          <th><%= @forum.body %></th>
+        </tr>
+        <tr></tr>
+        <tr></tr>
+      </table>
+    </div>
+
+    <div class="col-md-8 forum-post">
+      <div class="forum-post-display">
+        <table class="table table-borderless">
+          <% @forum_posts.each do |forum_post| %>
+            <% if forum_post.user == current_user %>
+              <tr>
+                <td></td>
+                <td></td>
+                <th>
+                  <%= forum_post.message %>
+                </th>
+              <% else %>
+                <td class="forum-post-user">
+                  <%= attachment_image_tag forum_post.user, :profile_image, size:'40x40', format: 'jpeg', fallback:"no_image.png", class:"circle-image" %>
+                </td>
+                <td>
+                  <%= forum_post.message %>
+                </td>
+                <td></td>
+              </tr>
+            <% end %>
+          <% end %>
+        </table>
+      </div>
+
+      <%= form_with model:@forum_post, url:forum_forum_posts_path(@forum), local:true do |f| %>
+        <div class="forum-post-form d-flex align-items-center">
+          <div class="p-2">
+            <%= f.text_area :message, size:"80%" %>
+          </div>
+          <div>
+            <%= f.submit '送信', class:"btn btn-outline-success" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <h3>ページが存在しません！</h3>
+<% end %>

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get '/about' => 'homes#about'
   # ユーザーのルーティング
   # relationを入れ子構造に
+  get 'users/sort' => 'users#sort'
   resources :users, only:[:index, :show, :edit, :update] do
     resources :relations, only:[:create, :destroy]
   end
@@ -19,13 +20,15 @@ Rails.application.routes.draw do
     resources :recommends, only:[:create, :destroy]
     resources :visits, only:[:create, :destroy]
   end
+  get 'map' => 'museums#map'
 
   resources :genres, only:[:create, :index, :destroy]
 
   resources :forums, only:[:create, :index, :show, :destroy] do
     resources :forum_posts, only:[:create]
   end
-  post 'forum/:id/lock' => 'forums#lock', as: 'forum_lock'
+  get 'forums/:id/chat' => 'forums#chat', as: 'forum_chat'
+  post 'forums/:id/lock' => 'forums#lock', as: 'forum_lock'
 
   get 'search' => 'searches#search'
 

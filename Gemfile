@@ -68,3 +68,6 @@ gem 'refile-mini_magick'
 
 gem 'dotenv-rails'
 gem 'geocoder'
+
+gem 'bootstrap', '~> 4.5'
+gem 'jquery-rails'

@@ -1,7 +1,18 @@
-<div class="page-title">
+<div class="page-title d-flex">
   <h3>
     <i class="fas fa-child"> ユーザー一覧</i>
   </h3>
+  <p class="mr-3 mt-2">
+    (<% if @sort == "visitor" %>
+      訪問数が多い順
+    <% elsif @sort == "recommend" %>
+      おすすめが多い順
+    <% elsif @sort == "comment" %>
+      コメント数が多い順
+    <% elsif @sort == "picture" %>
+      写真数が多い順
+    <% end %>)
+  </p>
 </div>
 
 <%= form_with url: users_sort_path, method: :get, local: true do |f| %>

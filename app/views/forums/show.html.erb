@@ -1,30 +1,209 @@
-<% if @forum.user.is_deleted == false %>
-  <% if @forum.lock == true %>
-    かぎ付き
-  <% end %>
-  <%= @forum.title %>
-  <%= @forum.body %>
+<div class="page-title">
+  <h3>
+    <i class="fas fa-clipboard-list"> 掲示板詳細</i>
+  </h3>
+</div>
 
-  <% @forum_posts.each do |forum_post| %>
-    <%= attachment_image_tag forum_post.user, :profile_image, size:'40x40', format: 'jpeg' %>
-    <%= forum_post.content %>
-  <% end %>
-
-  <div>
-    <p>めんばー</p>
-    <% @forum.users.each do |user| %>
-      <% if @forum.user_id == user.id %>
-        ほすと
+<div class="row">
+  <div class="col-md-3">
+    <!--ユーザー詳細画面のサイドバー：基本情報を表示-->
+    <h5 class="mb-5"><strong>掲示板を作ったひと</strong></h5>
+    <table>
+      <tr align="center">
+        <th colspan="2"><%= attachment_image_tag @forum.user, :profile_image, size:"80x80", format:"jpeg", fallback:"no_image.png", class:"circle-image" %></th>
+        <th></th>
+      </tr>
+      <tr align="center">
+        <th colspan="2"><%= @forum.user.name %></th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>　</th>
+        <td>　</td>
+      </tr>
+      <tr>
+        <th>行った博物館</th>
+        <td>　<%= @forum.user.visits.count %> 件</td>
+      </tr>
+      <tr>
+        <th>おすすめした博物館</th>
+        <td>　<%= @forum.user.recommends.count %> 件</td>
+      </tr>
+      <tr>
+        <td>　</td>
+        <td>　</td>
+      </tr>
+      <% if @forum.user.introduction != nil %>
+        <tr align="center">
+          <th colspan="2">自己紹介</th>
+          <td></td>
+        </tr>
       <% end %>
-      <%= attachment_image_tag user, :profile_image, size: '40x40', format: 'jpeg' %>
-      <%= user.name %>
-    <% end %>
+      <tr>
+        <td colspan="2"><%= @forum.user.introduction %></td>
+        <td></td>
+      </tr>
+      <% if @forum.user.forums.present? %>
+        <tr align="center">
+          <th colspan="2">掲示板への投稿</th>
+          <td></td>
+        </tr>
+        <% @forum.user.forums.each do |forum| %>
+          <tr>
+            <td colspan="2">・
+              <%= link_to forum.title, forum_path(forum.id) %>
+            </td>
+            <td></td>
+          </tr>
+        <% end %>
+      <% end %>
+      <tr align="center">
+        <th colspan="2">
+          <% if @forum.user != current_user %>
+            <% if @forum.user.followed_by?(current_user) %>
+              <%= link_to 'フォロー中', user_relation_path(@forum.user.id, @forum.user.id), method: :delete, class:"btn btn-success" %>
+            <% else %>
+              <%= link_to 'フォロー', user_relations_path(@forum.user.id), method: :post, class:"btn btn-primary" %>
+            <% end %>
+          <% end %>
+        </th>
+        <td></td>
+      </tr>
+      <tr>
+        <td>　</td>
+        <td>　</td>
+      </tr>
+      <% if @forum.user == current_user %>
+        <tr align="center">
+          <th colspan="2">
+            <%= link_to edit_user_path(current_user), class:"btn btn-outline-success btn-block" do %>
+              <i class="fas fa-user-edit"></i>
+              編集
+            <% end %>
+          </th>
+          <td></td>
+        </tr>
+        <tr>
+          <td>　</td>
+        </tr>
+        <tr align="center">
+          <th colspan="2">
+            <%= link_to user_withdraw_path(current_user), method: :put, "data-confirm" => "本当に退会しますか？", class:"btn btn-outline-danger" do %>
+              <i class="fas fa-running"></i>
+              退会
+            <% end %>
+          </th>
+        </tr>
+      <% end %>
+    </table>
   </div>
 
-  <%= form_with model:@forum_post, url:forum_forum_posts_path(@forum), local:true do |f| %>
-    <%= f.text_area :content %>
-    <%= f.submit '送信' %>
-  <% end %>
-<% else %>
-  <h3>ページが存在しません！</h3>
-<% end %>
+  <div class="pt-2 pr-2 pb-0 pl-2 mr-4 mb-4 col-md-8 forum-description">
+    <div class="d-flex forum-top">
+      <div class="d-flex forum-key">
+        <% if @forum.lock == true %>
+          <i class="fas fa-lock fa-lg key"></i>
+        <% else %>
+          <i class="fas fa-lock-open fa-lg unlocked-key"></i>
+        <% end %>
+      </div>
+      <div class="d-flex ml-auto mr-auto forum-nail">
+        <h4>●　</h4>
+      </div>
+    </div>
+    <table class="table forum">
+      <thead>
+        <tr align="center">
+          <th colspan="2" class="forum-title">
+            <%= @forum.title %>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr align="center">
+          <th colspan="2">
+            <%= @forum.users.count %>人が参加中！
+          </th>
+        </tr>
+        <tr>
+          <th class="forum-detail">訪問予定地：</th>
+          <td><%= @forum.where %></td>
+        </tr>
+        <tr>
+          <th>訪問予定日：</th>
+          <td><%= @forum.when %></td>
+        </tr>
+        <tr>
+          <th>ひとこと：</th>
+          <td><%= @forum.body %></td>
+        </tr>
+        <% if @forum.lock == true %>
+          <tr class="forum-button">
+            <% if @forum.membered?(current_user) %>
+              <td colspan="2" align="center">
+                <%= link_to forum_chat_path(@forum.id), class:"btn btn-success" do %>
+                  <i class="fas fa-users"></i>
+                  チャットに戻る！
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+          <tr>
+            <td colspan="2" align="center">
+              <%= link_to forum_path(@forum.id) do %>
+                <i class="fas fa-question-circle"></i>
+                詳細
+              <% end %>
+              <% if @forum.user_id == current_user.id %>
+                <%= link_to forum_lock_path(@forum.id), method: :post do %>
+                  <i class="fas fa-key"></i>
+                  鍵をはずす
+                <% end %>
+                <%= link_to forum_path(@forum.id), method: :delete do %>
+                  <i class="far fa-trash-alt"></i>
+                  削除
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% else %>
+          <tr class="forum-button">
+            <% if @forum.membered?(current_user) %>
+              <td colspan="2" align="center">
+                <%= link_to forum_chat_path(@forum.id), class:"btn btn-success" do %>
+                  <i class="fas fa-users"></i>
+                  チャットに戻る！
+                <% end %>
+              </td>
+            <% else %>
+              <td colspan="2" align="center">
+                <%= link_to forum_chat_path(@forum.id), class:"btn btn-primary" do %>
+                  <i class="fas fa-users"></i>
+                  参加する！
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+          <tr>
+            <td colspan="2" align="center">
+              <%= link_to forum_path(@forum.id) do %>
+                <i class="fas fa-question-circle"></i>
+                詳細
+              <% end %>
+              <% if @forum.user_id == current_user.id %>
+                <%= link_to forum_lock_path(@forum.id), method: :post do %>
+                  <i class="fas fa-key"></i>
+                  鍵をかける
+                <% end %>
+                <%= link_to forum_path(@forum.id), method: :delete do %>
+                  <i class="far fa-trash-alt"></i>
+                  削除
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

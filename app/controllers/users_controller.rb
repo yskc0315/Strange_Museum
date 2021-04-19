@@ -9,6 +9,7 @@ class UsersController < ApplicationController
   def show
     @posts      = Post.where(user_id: @user.id)
     @museums    = Museum.all.order(:prefecture)
+    @forums     = ForumUser.where(user_id: current_user.id)
     @followings = @user.followings
     @followeds  = @user.followeds
     # 通知関係↓
@@ -16,8 +17,8 @@ class UsersController < ApplicationController
     @notifications.where(checked: false).each do |notification|
       notification.update_attributes(checked: true)
     end
-    @created_museums = Museum.where(status: 1).order(created_at: "DESC")
-    @updated_museums = Museum.where(status: 1).order(created_at: "DESC")
+    @created_museums = Museum.where(status: 1).last(5)
+    @updated_museums = Museum.where(status: 2).last(5)
     # ここまで
   end
 
@@ -33,6 +34,22 @@ class UsersController < ApplicationController
     @user.update(is_deleted: true)
     reset_session
     redirect_to root_path
+  end
+
+  def sort
+    if params[:sort] == "recommend"
+      @users = User.all.sort{|a,b| b.recommends.count <=> a.recommends.count}
+      @sort = "recommend"
+    elsif params[:sort] == "visit"
+      @users = User.all.sort{|a,b| b.visits.count <=> a.visits.count}
+      @sort = "visitor"
+    elsif params[:sort] == "post"
+      @users = User.all.sort{|a,b| b.posts.count <=> a.posts.count}
+      @sort = "comment"
+    elsif params[:sort] == "picture"
+      @users = User.all.sort{|a,b| b.post_images.count <=> a.post_images.count}
+      @sort = "picture"
+    end
   end
 
   private

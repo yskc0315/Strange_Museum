@@ -17,6 +17,7 @@ class User < ApplicationRecord
   has_many :visited_museums, through: :visits, source: :museum
   has_many :favorites
   has_many :posts
+  has_many :post_images, through: :posts
   has_many :forum_posts
   has_many :forum_users
   has_many :forums, through: :forum_users

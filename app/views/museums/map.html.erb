@@ -1,0 +1,44 @@
+<div>
+  <!--地図表示-->
+  <div id='map'></div>
+    <style>
+      #map {
+        height: 500px ;
+        width: 500px ;
+      }
+    </style>
+  <script>
+    let map
+      function initMap(){
+        geocoder = new google.maps.Geocoder()
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 38.258595, lng:137.6850225},
+            zoom: 5,
+        });
+
+        <% @museums.each do |m| %>
+            (function(){
+            var contentString = "<%= m.name %>";
+
+            var marker = new google.maps.Marker({
+                position:{lat: <%= m.latitude %>, lng: <%= m.longitude %>},
+                map: map,
+                title: contentString
+            });
+            // 情報ウィンドウ(吹き出し)の定義
+            // 投稿の詳細ページへのリンクも
+            var infowindow = new google.maps.InfoWindow({
+            position: {lat: <%= m.latitude %>, lng: <%= m.longitude %>},
+            content: contentString
+            });
+            // クリックしたときに情報ウィンドウを表示
+            marker.addListener('click', function() {
+            infowindow.open(map, marker);
+            });
+            })();
+        <% end %>
+        }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['API_KEY']%>&callback=initMap" async defer></script>
+</div>
