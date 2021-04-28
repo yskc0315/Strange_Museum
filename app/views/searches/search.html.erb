@@ -27,7 +27,7 @@
           </thead>
           <% if current_user.admin? %>
             <tbody class="user_index">
-              <%= render 'user_index', users: @users %>
+              <%= render 'users/user_index', users: @users %>
             </tbody>
           <% else %>
             <tbody>
@@ -51,7 +51,7 @@
                     <td><%= user.post_images.count %>枚</td>
                     <td class="follow_<%= user.id %>">
                       <% if user != current_user %>
-                          <%= render 'follow', user: user %>
+                          <%= render 'users/follow', user: user %>
                       <% end %>
                     </td>
                     <% if current_user.admin? %>
