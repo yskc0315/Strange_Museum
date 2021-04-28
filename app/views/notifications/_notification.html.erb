@@ -1,23 +1,30 @@
 <% visitor = notification.visitor %>
 <% visited = notification.visited %>
 
-<%= notification.created_at.strftime('%Y/%m/%d') %>
+<table>
+  <tr>
+    <td>
+      <span>　　<%= notification.created_at.strftime('%Y/%m/%d') %></span>
+    </td>
+    <td>
+      <% if visitor != current_user %>
+        <%= link_to user_path(visitor) do %>
+          <% if visitor.is_deleted == false %>
+            <span>　<%= visitor.name %>さん</span>
+          <% else %>
+            退会済みユーザー
+          <% end %>
+        <% end %>
+        <span>が</span>
+      <% end %>
 
-<% if visitor != current_user %>
-  <%= link_to user_path(visitor) do %>
-    <% if visitor.is_deleted == false %>
-      <%= visitor.name %>さん
-    <% else %>
-      退会済みユーザー
-    <% end %>
-  <% end %>
-  <span>が</span>
-<% end %>
-
-<% case notification.action %>
-  <% when 'favorite' then %>
-    <%= link_to 'あなたの投稿' %>
-    <span>にいいねしました！</span>
-  <% when 'follow' then %>
-    <span>あなたをフォローしました！</span>
-<% end %>
+      <% case notification.action %>
+        <% when 'favorite' then %>
+          <span>あなたの投稿</span>
+          <span>にいいねしました！</span>
+        <% when 'follow' then %>
+          <span>あなたをフォローしました！</span>
+      <% end %>
+    </td>
+  </tr>
+</table>

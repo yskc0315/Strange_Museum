@@ -1,17 +1,18 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :user_set, only:[:show, :edit, :update, :withdraw]
+  before_action :user_set, only:[:show, :edit, :update, :withdraw, :back]
 
   def index
     @users = User.all
   end
 
   def show
-    @posts      = Post.where(user_id: @user.id)
+    @my_posts       = Post.where(user_id: @user.id).order(id: "DESC")
+    @visits        = Visit.where(user_id: current_user.id)
     @museums    = Museum.all.order(:prefecture)
-    @forums     = ForumUser.where(user_id: current_user.id)
-    @followings = @user.followings
-    @followeds  = @user.followeds
+    @forum_users = ForumUser.where(user_id: current_user.id)
+    @followings  = @user.followings
+    @followeds   = @user.followeds
     # 通知関係↓
     @notifications = current_user.passive_notifications.all
     @notifications.where(checked: false).each do |notification|
@@ -26,14 +27,25 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.update(params_user)
-    redirect_to user_path(current_user)
+    if @user.update(params_user)
+      redirect_to user_path(current_user)
+    else
+      render 'edit'
+    end
   end
 
   def withdraw
     @user.update(is_deleted: true)
-    reset_session
-    redirect_to root_path
+    unless current_user.admin?
+      reset_session
+      redirect_to root_path
+    end
+    @users = User.all
+  end
+
+  def back
+    @user.update(is_deleted: false)
+    @users = User.all
   end
 
   def sort

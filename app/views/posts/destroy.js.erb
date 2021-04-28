@@ -1,0 +1,5 @@
+$(".post_index").html("<%= j(render partial: 'museums/posts', locals: {posts: @posts, museum: @museum} ) %>");
+
+$(".my-post_index").html("<%= j(render 'users/posts', my_posts: @my_posts) %>");
+
+$(".post_image_index").html("<%= j(render partial: 'museums/post_images', locals: {posts: @posts, museum: @museum} ) %>");

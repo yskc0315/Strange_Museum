@@ -1,29 +1,39 @@
-<% @created_museums.each do |museum| %>
-  <% if user_signed_in? %>
-    <table>
-      <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
-      <tr><%= link_to museum.user.name, user_path(museum.user.id) %>さんが</tr>
-      <tr><%= link_to museum.name, museum_path(museum.id) %>を投稿しました！</tr>
-    </table>
-  <% else %>
-    <table>
-      <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
-      <tr><%= link_to museum.name, museum_path(museum.id) %>が投稿されました!</tr>
-    </table>
-  <% end %>
-<% end %>
+<div class="relative">
+  <div class="slide_images" id="slider">
+    <% @post_images.each do |post_image| %>
+      <%= attachment_image_tag post_image, :picture, :fill, 1200, 600, format: "jpeg", class:"slide_image" %>
+    <% end %>
+  </div>
+  <p class="absolute">ここにメッセージかく</p>
+</div>
 
-<% @updated_museums.each do |museum| %>
-  <% if user_signed_in? %>
-    <table>
-      <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
-      <tr><%= link_to museum.user.name, user_path(museum.user.id) %>さんが</tr>
-      <tr><%= link_to museum.name, museum_path(museum.id) %>を編集しました！</tr>
-    </table>
-  <% else %>
-    <table>
-      <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
-      <tr><%= link_to museum.name, museum_path(museum.id) %>が編集されました!</tr>
-    </table>
-  <% end %>
-<% end %>
+<div class="container">
+  <div class="row">
+    <div>
+      <h2>新着博物館</h2>
+      <div class="d-flex">
+        <% @created_museums.each do |museum| %>
+          <table>
+            <tr align="center">
+              <th>
+                <%= link_to museum_path(museum.id) do %>
+                  <%= attachment_image_tag museum, :appearance_image, size:"150x150", format: "jpeg" %>
+                <% end %>
+              </th>
+            </tr>
+            <tr align="center">
+              <th><%= museum.name %></th>
+            </tr>
+          </table>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="other-museum">
+    <p>
+      <%= link_to '>>その他の博物館はこちらからどうぞ！', museums_path %>
+    </p>
+  </div>
+</div>
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>

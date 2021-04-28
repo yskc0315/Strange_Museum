@@ -33,7 +33,8 @@ class ForumsController < ApplicationController
 
   def destroy
     @forum.destroy
-    redirect_back(fallback_location: root_path)
+    @forums = Forum.all.order(id:"DESC")
+    redirect_to forums_path
   end
 
   def lock
@@ -43,7 +44,7 @@ class ForumsController < ApplicationController
       @forum.lock = false
     end
     @forum.save
-    redirect_back(fallback_location: root_path)
+    @forums = Forum.all.order(id:"DESC")
   end
 
   private

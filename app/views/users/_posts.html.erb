@@ -1,0 +1,7 @@
+<% my_posts.each do |post| %>
+  <div class="post-index user-post_<%= post.id %>">
+    <% if post.user.is_deleted == false %>
+      <%= render 'users/post', post: post %>
+    <% end %>
+  </div>
+<% end %>

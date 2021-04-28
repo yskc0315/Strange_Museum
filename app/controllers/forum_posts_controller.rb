@@ -5,7 +5,7 @@ class ForumPostsController < ApplicationController
     forum_post = current_user.forum_posts.new(forum_post_params)
     forum_post.forum_id = params[:forum_id]
     forum_post.save
-    redirect_back(fallback_location: root_path)
+    @forum_posts = ForumPost.where(forum_id: params[:forum_id]).all
   end
 
   private

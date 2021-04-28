@@ -8,16 +8,20 @@ class MuseumsController < ApplicationController
   end
 
   def create
-    museum = Museum.new(params_museum)
-    museum.user_id = current_user.id
-    museum.status = 1
-    museum.save
-    redirect_to museum_path(museum.id)
+    @museum = Museum.new(params_museum)
+    @museum.user_id = current_user.id
+    @museum.status = 1
+    if @museum.save
+      redirect_to museum_path(@museum.id)
+    else
+      @regular_holidays = ["月", "火", "水", "木", "金", "土", "日", "祝", "不定期", "なし", "不明"]
+      render 'new'
+    end
   end
 
   def show
     @post = Post.new
-    @posts = Post.where(museum_id: params[:id])
+    @posts = Post.where(museum_id: params[:id]).order(id: "DESC")
   end
 
   def index
@@ -31,8 +35,12 @@ class MuseumsController < ApplicationController
   def update
     @museum.user_id = current_user.id
     @museum.status = 2
-    @museum.update(params_museum)
-    redirect_to museum_path(@museum.id)
+    if @museum.update(params_museum)
+      redirect_to museum_path(@museum.id)
+    else
+      @regular_holidays = ["月", "火", "水", "木", "金", "土", "日", "祝", "不定期", "なし", "不明"]
+      render 'edit'
+    end
   end
 
   def destroy

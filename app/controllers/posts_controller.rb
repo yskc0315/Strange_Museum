@@ -6,7 +6,7 @@ class PostsController < ApplicationController
     post = @museum.posts.build(params_post)
     post.user_id = current_user.id
     post.save
-    redirect_back(fallback_location: root_path)
+    @posts = Post.where(museum_id: params[:museum_id]).order(id: "DESC")
   end
 
   def edit
@@ -20,9 +20,10 @@ class PostsController < ApplicationController
   end
 
   def destroy
-    post = @museum.posts.find(params[:id])
-    post.destroy
-    redirect_back(fallback_location: root_path)
+    @post = @museum.posts.find(params[:id])
+    @post.destroy
+    @posts = Post.where(museum_id: params[:museum_id]).order(id: "DESC")
+    @my_posts = Post.where(user_id: @post.user.id).order(id: "DESC")
   end
 
   private

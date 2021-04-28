@@ -1,0 +1,3 @@
+$(".post_<%= @post.id %>").html("<%= j(render partial: 'museums/post', locals: {post: @post, museum: @museum} ) %>");
+
+$(".user-post_<%= @post.id %>").html("<%= j(render partial: 'users/post', locals: {post: @post, museum: @museum} ) %>");

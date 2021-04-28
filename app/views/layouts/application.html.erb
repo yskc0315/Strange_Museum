@@ -7,6 +7,8 @@
     <script src="https://kit.fontawesome.com/f173e48ce7.js" crossorigin="anonymous"></script>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
   </head>
 
   <body>
@@ -15,56 +17,51 @@
         <div class="container">
           <ul class="header-lists d-flex">
             <li class="header-list">
-              <%= link_to user_path(current_user.id) do %>
+              <%= link_to user_path(current_user.id), {:class => "header-link"} do %>
                 <%= attachment_image_tag current_user, :profile_image, size: "30x30", format: "jpeg", fallback: "no_image.png", class:"circle-image" %>
                 <strong>マイページ</strong>
               <% end %>
             </li>
             <li class="header-list">
-              <%= link_to museums_path do %>
+              <%= link_to museums_path, {:class => "header-link"} do %>
                 <i class="fas fa-landmark"> 博物館一覧</i>
               <% end %>
             </li>
             <li class="header-list">
-              <%= link_to users_path do %>
+              <%= link_to users_path, {:class => "header-link"} do %>
                 <i class="fas fa-child"> ユーザー一覧</i>
               <% end %>
             </li>
             <li class="header-list">
-              <%= link_to forums_path do %>
+              <%= link_to forums_path, {:class => "header-link"} do %>
                 <i class="fas fa-clipboard-list"> 掲示板</i>
               <% end %>
             </li>
             <li class="header-list">
-              <%= link_to about_path do %>
-                <i class="fas fa-question"> About</i>
-              <% end %>
-            </li>
-            <li class="header-list">
-              <%= link_to destroy_user_session_path, method: :delete do %>
+              <%= link_to destroy_user_session_path, {method: :delete, :class => "header-link"} do %>
                 <i class="fas fa-sign-out-alt"> ログアウト</i>
               <% end %>
             </li>
           </ul>
           <% else %>
-          <ul class="header-lists d-flex">
+          <ul class="header-lists d-flex pt-3">
             <li class="header-list">
-              <%= link_to museums_path do %>
+              <%= link_to museums_path, {:class => "header-link"} do %>
                 <i class="fas fa-landmark"> 博物館一覧</i>
               <% end %>
             </li>
             <li class="header-list">
-              <%= link_to about_path do %>
+              <%= link_to about_path, {:class => "header-link"} do %>
                 <i class="fas fa-question"> About</i>
               <% end %>
             </li>
             <li class="header-list">
-              <%= link_to new_user_session_path do %>
+              <%= link_to new_user_session_path, {:class => "header-link"} do %>
                 <i class="fas fa-sign-in-alt"> ログイン</i>
               <% end %>
             </li>
             <li class="header-list">
-              <%= link_to new_user_registration_path do %>
+              <%= link_to new_user_registration_path, {:class => "header-link"} do %>
                 <i class="fas fa-user-plus"> ユーザー登録</i>
               <% end %>
             </li>
@@ -82,10 +79,12 @@
           <% end %>
         </div>
       <% end %>
-
     </header>
-    <div class="container">
+    <div class="container main">
       <%= yield %>
     </div>
+    <footer>
+      <p class="copy-right">©Yoshiki Okada</p>
+    </footer>
   </body>
 </html>

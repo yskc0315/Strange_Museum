@@ -1,0 +1,31 @@
+<% users.each do |user| %>
+  <tr align="center">
+    <td>
+      <% if user.forum_host?(user) %>
+        <i class="fas fa-clipboard-list fa-lg clipboard"></i>
+      <% end %>
+    </td>
+    <td align="left">
+      <%= link_to user_path(user.id) do %>
+        <%= attachment_image_tag user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png", class:"circle-image" %>
+        <%= user.name %>
+      <% end %>
+    </td>
+    <td><%= user.visits.count %>軒</td>
+    <td><%= user.recommends.count %>軒</td>
+    <td><%= user.posts.count %>件</td>
+    <td><%= user.post_images.count %>枚</td>
+    <td class="follow_<%= user.id %>">
+      <% if user != current_user %>
+          <%= render 'follow', user: user %>
+      <% end %>
+    </td>
+    <td>
+      <% if user.is_deleted == false %>
+        <%= link_to '有効', user_withdraw_path(user.id), method: :put, remote: true, class:"btn btn-info" %>
+      <% else %>
+        <%= link_to '退会', user_back_path(user.id), method: :put, remote: true, class:"btn btn-danger" %>
+      <% end %>
+    </td>
+  </tr>
+<% end %>

@@ -21,10 +21,22 @@
   box-siging: border-box;
 }
 
-header {
+body {
+	display: flex;
+  flex-flow: column;
+  min-height: 100vh;
+}
 
-  background-color: #ff0;
-  margin-bottom: 10px;
+.main {
+  flex: 1;
+}
+
+header {
+  // position: fixed;
+  // z-index: 100;
+  width: 100%;
+  height: 100px;
+  background-color: #b22222;
 }
 
 .header-lists {
@@ -33,6 +45,7 @@ header {
 }
 
 .header-list {
+  padding-top: 20px;
   padding-right: 25px;
   font-size: 18px;
 }
@@ -50,13 +63,30 @@ a:hover {
   text-decoration: none;
 }
 
+.header-link {
+  color: #fff;
+}
+
 .circle-image{
   border: solid;
   border-radius: 50%;
 }
 
 .page-title {
+  margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.my-heart {
+  color: #f00;
+}
+
+.like-heart {
+  color: #f00;
+}
+
+.unlike-heart {
+  color: #dcdcdc;
 }
 
 .star {
@@ -77,4 +107,18 @@ a:hover {
 
 .unchecked-door {
   color: #dcdcdc;
+}
+
+footer {
+  margin-top: 30px ;
+  text-align: center;
+  width: 100%;
+  height: 50px;
+  background-color: #b22222;
+  // position: absolute;
+  // bottom: 0;
+}
+
+.copy-right {
+  color: #fff;
 }

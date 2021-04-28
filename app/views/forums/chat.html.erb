@@ -1,14 +1,23 @@
-<div class="page-title">
+<div class="page-title d-flex">
   <h3>
-    <i class="fas fa-comments"> チャットルーム</i>
+    <i class="fas fa-comments">
+       <%= @forum.title %>
+    </i>
   </h3>
+  <div class="pl-2">
+    <% if @forum.lock == true %>
+      <i class="fas fa-lock fa-lg key"></i>
+    <% else %>
+      <i class="fas fa-lock-open fa-lg unlocked-key"></i>
+    <% end %>
+  </div>
 </div>
 
 <% if @forum.user.is_deleted == false %>
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <div>
-        <h4><strong>参加メンバー</strong></h4>
+        <h4>参加メンバー</h4>
           <table>
             <% @forum.users.each do |user| %>
               <tr>
@@ -19,73 +28,33 @@
                   <% end %>
                 </td>
                 <th>
-                  <%= attachment_image_tag user, :profile_image, size: '40x40', format: 'jpeg', fallback:"no_image.png" %>
-                  <%= user.name %>
+                  <%= link_to user_path(user.id) do %>
+                    <%= attachment_image_tag user, :profile_image, size: '40x40', format: 'jpeg', fallback:"no_image.png" %>
+                    <%= user.name %>
+                  <% end %>
                 </th>
               </tr>
             <% end %>
           </table>
       </div>
-
-      <table class="table">
-        <tr>
-          <th>
-            <% if @forum.lock == true %>
-              <i class="fas fa-lock fa-lg key"></i>
-            <% else %>
-              <i class="fas fa-lock-open fa-lg unlocked-key"></i>
-            <% end %>
-          </th>
-          <td></td>
-        </tr>
-        <tr>
-          <td>タイトル</td>
-          <th><%= @forum.title %></th>
-        </tr>
-        <tr>
-          <td>ひとこと</td>
-          <th><%= @forum.body %></th>
-        </tr>
-        <tr></tr>
-        <tr></tr>
-      </table>
     </div>
 
-    <div class="col-md-8 forum-post">
-      <div class="forum-post-display">
-        <table class="table table-borderless">
-          <% @forum_posts.each do |forum_post| %>
-            <% if forum_post.user == current_user %>
-              <tr>
-                <td></td>
-                <td></td>
-                <th>
-                  <%= forum_post.message %>
-                </th>
-              <% else %>
-                <td class="forum-post-user">
-                  <%= attachment_image_tag forum_post.user, :profile_image, size:'40x40', format: 'jpeg', fallback:"no_image.png", class:"circle-image" %>
-                </td>
-                <td>
-                  <%= forum_post.message %>
-                </td>
-                <td></td>
-              </tr>
-            <% end %>
-          <% end %>
-        </table>
+    <div class="col-md-9 forum-post">
+      <div class="forum-post-display" id="scroll-inner">
+        <%= render 'chat_posts', forum_posts: @forum_posts %>
       </div>
-
-      <%= form_with model:@forum_post, url:forum_forum_posts_path(@forum), local:true do |f| %>
-        <div class="forum-post-form d-flex align-items-center">
-          <div class="p-2">
-            <%= f.text_area :message, size:"80%" %>
+      <div>
+        <%= form_with model:@forum_post, url:forum_forum_posts_path(@forum) do |f| %>
+          <div class="forum-post-form d-flex align-items-center">
+            <div class="p-2">
+              <%= f.text_area :message, size:"95%" %>
+            </div>
+            <div>
+              <%= f.submit '送信', class:"btn btn-outline-success" %>
+            </div>
           </div>
-          <div>
-            <%= f.submit '送信', class:"btn btn-outline-success" %>
-          </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
 <% else %>

@@ -1,0 +1,54 @@
+<div>
+  <h5><strong>フォロー</strong></h5>
+  <% if followings.exists? %>
+    <table class="table">
+      <tr align="center">
+        <th></th>
+        <th></th>
+        <th>訪問軒数</th>
+        <th>おすすめ</th>
+        <th>コメント数</th>
+        <th>写真数</th>
+      </tr>
+      <% followings.each do |following| %>
+        <tr align="center">
+          <td><%= attachment_image_tag following, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png" %></td>
+          <td><%= following.name %></td>
+          <td><%= following.visits.count %> 軒</td>
+          <td><%= following.recommends.count %> 軒</td>
+          <td><%= following.posts.count %> 件</td>
+          <td><%= following.post_images.count %> 枚</td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <p>　フォローしている人はいません！</p>
+  <% end %>
+</div>
+<div>
+  <h5><strong>フォロワー</strong></h5>
+  <% if followeds.exists? %>
+    <table class="table">
+      <tr align="center">
+        <th></th>
+        <th></th>
+        <th>訪問軒数</th>
+        <th>おすすめ</th>
+        <th>コメント数</th>
+        <th>写真数</th>
+      </tr>
+      <% followeds.each do |followed| %>
+      <tr align="center">
+        <td><%= attachment_image_tag followed, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png" %></td>
+        <td><%= followed.name %></td>
+        <td><%= followed.visits.count %> 軒</td>
+        <td><%= followed.recommends.count %> 軒</td>
+        <td><%= followed.posts.count %> 件</td>
+        <td><%= followed.post_images.count %> 枚</td>
+      </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <p>　フォローされている人はいません！</p>
+  <% end %>
+</div>

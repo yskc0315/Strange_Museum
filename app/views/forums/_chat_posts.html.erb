@@ -1,0 +1,21 @@
+<% forum_posts.each do |forum_post| %>
+  <% if forum_post.user == current_user %>
+    <div class="forum-right d-flex pr-5">
+      <div class="forum-message">
+        <%= forum_post.message %>
+      </div>
+    </div>
+  <% else %>
+    <div class="m-0 p-0 pl-2">
+      <%= forum_post.user.name %>
+    </div>
+    <div class="forum-left d-flex mt-0 mb-0">
+      <div class="user-icon pl-2">
+        <%= attachment_image_tag forum_post.user, :profile_image, size:'40x40', format: 'jpeg', fallback:"no_image.png", class:"circle-image" %>
+      </div>
+      <div class="forum-message others-message">
+        <%= forum_post.message %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

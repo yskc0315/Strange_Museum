@@ -1,4 +1,16 @@
 class Museum < ApplicationRecord
+
+# ↓バリデーション
+  # validates :appearance_image_id, presence: true
+  validates :name, presence: true
+  validates :genre_id, presence: true
+  validates :opening_time, presence: true
+  validates :closing_time, presence: true
+  validates :regular_holiday, presence: true
+  validates :prefecture, presence: true
+  validates :address, presence: true
+  validates :entrance_fee, presence: true
+# ↑バリデーション
   attachment :appearance_image
 
 # アソシエーション

@@ -69,30 +69,12 @@
       <table class="museum-button mt-3">
         <!--おすすめボタンと訪問済みボタン-->
         <tr align="center">
-          <th>
-            <% if @museum.recommended_by?(current_user) %>
-              <%= link_to museum_recommend_path(@museum.id, @museum.id), method: :delete do %>
-                <i class="fas fa-star fa-2x star"></i>
-              <% end %>
-            <% else %>
-              <%= link_to museum_recommends_path(@museum.id), method: :post do %>
-                <i class="far fa-star fa-2x unchecked-star"></i>
-              <% end %>
-            <% end %>
-            <%= @museum.recommends.count %>
+          <th class="recommend">
+            <%= render 'recommend', museum: @museum %>
           </th>
           <th> </th>
-          <th>
-            <% if @museum.visited_by?(current_user) %>
-              <%= link_to museum_visit_path(@museum.id, @museum.id), method: :delete do %>
-                <i class="fas fa-door-open fa-2x door"></i>
-              <% end %>
-            <% else %>
-              <%= link_to museum_visits_path(@museum.id), method: :post do %>
-                <i class="fas fa-door-closed fa-2x unchecked-door"></i>
-              <% end %>
-            <% end %>
-            <%= @museum.visits.count %>
+          <th class="visit">
+            <%= render 'visit', museum: @museum %>
           </th>
         </tr>
         <tr align="center">
@@ -117,7 +99,7 @@
           <th> </th>
           <th>
             <% if current_user.admin? %>
-              <%= link_to museum_path(@museum.id), method: :delete, class:"btn btn-danger" do %>
+              <%= link_to museum_path(@museum.id), method: :delete, class:"btn btn-danger ml-3" do %>
                 <i class="fas fa-trash"></i>
                 削除
               <% end %>
@@ -128,7 +110,7 @@
     <% end %>
   </div>
 
-  <div class="col-md-9 ">
+  <div class="col-md-9">
     <ul id="tab-menu" class="mb-0">
       <li><a href="#top" class="active">コメント</a></li>
       <li><a href="#post-image" class="">アルバム</a></li>
@@ -136,36 +118,36 @@
     <div id="tab-contents">
       <% if user_signed_in? %>
         <div id="top" class="tab">
-          <div class="post-form">
+          <!--コメント投稿フォームの表示/非表示ボタン-->
+          <input type="button" value="＋コメント投稿" id="post-button" class="btn btn-primary mb-2">
+          <div class="posts-form" id="post-form">
             <!--コメント投稿フォーム-->
-            <%= form_with model:@post, url:museum_posts_path(@museum.id) , local:true do |f| %>
-              <div class="post-title">
+            <%= form_with model:@post, url:museum_posts_path(@museum.id) do |f| %>
+              <div class="posts-title">
                 <strong><%= f.label :title, 'タイトル', class:"mr-3" %></strong>
                 <%= f.text_field :title, size:"30" %>
               </div>
-              <div class="post-body">
+              <div class="posts-body">
                 <strong><%= f.label :body, '本文', class:"mr-3" %></strong>
                 <%= f.text_area :body, size:"90" %><br/>
                 <strong><%= f.label :post_images_pictures, '写真', class:"mr-3" %></strong>
                 <%= f.attachment_field :post_images_pictures, multiple: true %>
               </div>
-              <div class="post-detail d-flex">
-                <div>
-                  <span class="mr-3">
-                    <strong><%= f.label :how_to_visit, '訪問方法' %></strong>
-                    <% Post.how_to_visits.keys.each do |h| %>
-                      <%= f.radio_button :how_to_visit, h %>
-                      <%= f.label :how_to_visit, h %>
-                    <% end %>
-                  </span>
-                  <span>
-                    <strong><%= f.label :companion, '同伴者' %></strong>
-                    <% Post.companions.keys.each do |c| %>
-                      <%= f.radio_button :companion, c %>
-                      <%= f.label :companion, c %>
-                    <% end %>
-                  </span>
-                </div>
+              <div class="posts-form-detail d-flex">
+                <span class="mr-3">
+                  <strong><%= f.label :how_to_visit, '訪問方法' %></strong>
+                  <% Post.how_to_visits.keys.each do |h| %>
+                    <%= f.radio_button :how_to_visit, h %>
+                    <%= f.label :how_to_visit, h %>
+                  <% end %>
+                </span>
+                <span>
+                  <strong><%= f.label :companion, '同伴者' %></strong>
+                  <% Post.companions.keys.each do |c| %>
+                    <%= f.radio_button :companion, c %>
+                    <%= f.label :companion, c %>
+                  <% end %>
+                </span>
                 <div>
                   <%= f.submit '投稿する！', class:"btn btn-success" %>
                 </div>
@@ -173,74 +155,13 @@
             <% end %>
           </div>
           <!--コメント表示-->
-          <% @posts.each do |post| %>
-            <% if post.user.is_deleted == false %>
-              <div class="post-form">
-                <div class="post-title d-flex">
-                  <div class="post-main_title"><strong><%= post.title %></strong></div>
-                  <div class="post-user">
-                    <%= link_to user_path(post.user.id) do %>
-                      <%= attachment_image_tag post.user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png", class:"circle-image" %>
-                    <% end %>
-                    <%= post.user.name %>
-                  </div>
-                </div>
-                <div class="post-body">
-                  <%= post.body %><br/>
-                  <!--画像が投稿されていた場合に画像表示-->
-                  <% if post.post_images.present? %>
-                    <% post.post_images.each do |image| %>
-                      <%= attachment_image_tag image, :picture, size:"40x40", format:"jpeg" %>
-                    <% end %>
-                  <% end %>
-                </div>
-                <div class="post-detail d-flex">
-                  <div>
-                    <% if post.how_to_visit.present? %>
-                      <label>訪問方法：</label>
-                      <%= post.how_to_visit %>
-                    <% end %>
-                    <% if post.companion.present? %>
-                      <label>同伴者：</label>
-                      <%= post.companion %>
-                    <% end %>
-                  </div>
-                  <div>
-                    <% if post.user == current_user %>
-                      <%= link_to edit_museum_post_path(@museum.id, post.id) do %>
-                        <i class="far fa-edit fa-lg"></i>
-                        編集
-                      <% end %>
-                      <%= link_to museum_post_path(@museum.id, post.id), method: :delete do %>
-                        <i class="far fa-trash-alt fa-lg"></i>
-                        削除
-                      <% end %>
-                    <% else %>
-                      <% if post.favorited_by?(current_user) %>
-                        <%= link_to museum_post_favorite_path(@museum.id, post.id, post.id), method: :delete do %>
-                          <i class="fas fa-heart fa-lg"></i>
-                          <%= post.favorites.count %>
-                        <% end %>
-                      <% else %>
-                        <%= link_to museum_post_favorites_path(@museum.id, post.id), method: :post do %>
-                          <i class="far fa-heart fa-lg"></i>
-                          <%= post.favorites.count %>
-                        <% end %>
-                      <% end %>
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-            <% end %>
-          <% end %>
+          <div class="post_index">
+            <%= render partial: 'museums/posts', locals: {posts: @posts, museum: @museum} %>
+          </div>
         </div>
         <div id="post-image" class="tab">
-          <div>
-            <% @posts.each do |post| %>
-              <% post.post_images.each do |image| %>
-                <%= attachment_image_tag image, :picture, size:"100x100", format:"jpeg" %>
-              <% end %>
-            <% end %>
+          <div class="post_image_index">
+            <%= render partial: 'museums/post_images', locals: {posts: @posts, museum: @museum} %>
           </div>
         </div>
       <% end %>

@@ -1,8 +1,8 @@
 class Forum < ApplicationRecord
   belongs_to :user
-  has_many :forum_users
+  has_many :forum_users, dependent: :destroy
   has_many :users, through: :forum_users
-  has_many :forum_posts
+  has_many :forum_posts, dependent: :destroy
   accepts_nested_attributes_for :forum_users
 
   def membered?(current_user)

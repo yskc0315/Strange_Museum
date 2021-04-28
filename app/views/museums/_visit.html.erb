@@ -1,0 +1,10 @@
+<% if museum.visited_by?(current_user) %>
+  <%= link_to museum_visit_path(museum.id, museum.id), method: :delete, remote: true do %>
+    <i class="fas fa-door-open fa-2x door"></i>
+  <% end %>
+<% else %>
+  <%= link_to museum_visits_path(museum.id), method: :post, remote: true do %>
+    <i class="fas fa-door-closed fa-2x unchecked-door"></i>
+  <% end %>
+<% end %>
+<%= museum.visits.count %>

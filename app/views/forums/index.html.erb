@@ -6,7 +6,7 @@
 
 <div class="row">
   <div class="forum-form">
-    <%= form_with model:@forum, local:true do |f| %>
+    <%= form_with model:@forum do |f| %>
       <strong><%= f.label :title, 'タイトル' %></strong><br/>
       　<%= f.text_field :title, class:"mb-2" %><br/>
 
@@ -29,116 +29,8 @@
 
   <div class="col-md-3"></div>
   <div class="col-md-9">
-    <div class="row">
-      <% @forums.each do |forum| %>
-        <% if forum.user.is_deleted == false %>
-          <div class="pt-2 pr-2 pb-0 pl-2 mr-4 mb-4 col-md-5 forum-description">
-            <div class="d-flex forum-top">
-              <div class="d-flex forum-key">
-                <% if forum.lock == true %>
-                  <i class="fas fa-lock fa-lg key"></i>
-                <% else %>
-                  <i class="fas fa-lock-open fa-lg unlocked-key"></i>
-                <% end %>
-              </div>
-              <div class="d-flex ml-auto mr-auto forum-nail">
-                <h4>●　</h4>
-              </div>
-            </div>
-            <table class="table forum">
-              <thead>
-                <tr class="forum-title" align="center">
-                  <th colspan="2">
-                    <%= link_to forum_path(forum.id) do %>
-                      <%= forum.title %>
-                    <% end %>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr class="forum-letter">
-                  <td width="130">訪問予定地：</td>
-                  <th class="pl-0 pr-0"><%= forum.where %></th>
-                </tr>
-                <tr class="forum-letter">
-                  <td>訪問予定日：</td>
-                  <th class="pl-0 pr-0"><%= forum.when %></th>
-                </tr>
-                <tr class="forum-letter">
-                  <td>ひとこと　：</td>
-                  <th class="pl-0 pr-0"><%= forum.body %></th>
-                </tr>
-                <% if forum.lock == true %>
-                  <tr class="forum-button">
-                    <% if forum.membered?(current_user) %>
-                      <td colspan="2" align="center">
-                        <%= link_to forum_chat_path(forum.id), class:"btn btn-success" do %>
-                          <i class="fas fa-users"></i>
-                          チャットに戻る！
-                        <% end %>
-                      </td>
-                    <% end %>
-                  </tr>
-                  <tr>
-                    <td colspan="2" align="center">
-                      <%= link_to forum_path(forum.id) do %>
-                        <i class="fas fa-question-circle"></i>
-                        詳細
-                      <% end %>
-                      <% if forum.user_id == current_user.id %>
-                        <%= link_to forum_lock_path(forum.id), method: :post do %>
-                          <i class="fas fa-key"></i>
-                          鍵をはずす
-                        <% end %>
-                        <%= link_to forum_path(forum.id), method: :delete do %>
-                          <i class="far fa-trash-alt"></i>
-                          削除
-                        <% end %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% else %>
-                  <tr class="forum-button">
-                    <% if forum.membered?(current_user) %>
-                      <td colspan="2" align="center">
-                        <%= link_to forum_chat_path(forum.id), class:"btn btn-success" do %>
-                          <i class="fas fa-users"></i>
-                          チャットに戻る！
-                        <% end %>
-                      </td>
-                    <% else %>
-                      <td colspan="2" align="center">
-                        <%= link_to forum_chat_path(forum.id), class:"btn btn-primary" do %>
-                          <i class="fas fa-users"></i>
-                          参加する！
-                        <% end %>
-                      </td>
-                    <% end %>
-                  </tr>
-                  <tr>
-                    <td colspan="2" align="center">
-                      <%= link_to forum_path(forum.id) do %>
-                        <i class="fas fa-question-circle"></i>
-                        詳細
-                      <% end %>
-                      <% if forum.user_id == current_user.id %>
-                        <%= link_to forum_lock_path(forum.id), method: :post do %>
-                          <i class="fas fa-key"></i>
-                          鍵をかける
-                        <% end %>
-                        <%= link_to forum_path(forum.id), method: :delete do %>
-                          <i class="far fa-trash-alt"></i>
-                          削除
-                        <% end %>
-                      <% end %>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-        <% end %>
-      <% end %>
+    <div class="row forums">
+      <%= render 'forums', forums: @forums %>
     </div>
   </div>
 </div>

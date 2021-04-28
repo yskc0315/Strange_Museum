@@ -40,49 +40,45 @@
           <th colspan="2">自己紹介</th>
           <td></td>
         </tr>
+        <tr>
+          <td colspan="2"><%= @user.introduction %></td>
+          <td></td>
+        </tr>
       <% end %>
-      <tr>
-        <td colspan="2"><%= @user.introduction %></td>
-        <td></td>
-      </tr>
       <% if @user.forums.present? %>
+        <tr align="center">
+          <th colspan="2">作成した掲示板</th>
+          <td></td>
+        </tr>
         <% @user.forums.each do |forum| %>
-          <% if forum.user_id == current_user.id %>
-            <tr align="center">
-              <th colspan="2">掲示板への投稿</th>
-              <td></td>
-            </tr>
+          <tr>
+            <td colspan="2">・
+              <%= link_to forum.title, forum_path(forum.id) %>
+            </td>
+            <td></td>
+          </tr>
+        <% end %>
+      <% end %>
+      <% if @forum_users.present? %>
+        <% if @user.id == current_user.id %>
+          <tr align="center">
+            <th colspan="2">参加中の掲示板</th>
+            <td></td>
+          </tr>
+          <% @forum_users.each do |forum_user| %>
             <tr>
               <td colspan="2">・
-                <%= link_to forum.title, forum_path(forum.id) %>
+                <%= link_to forum_user.forum.title, forum_path(forum_user.forum.id) %>
               </td>
               <td></td>
             </tr>
           <% end %>
         <% end %>
       <% end %>
-      <% if @user.id == current_user.id %>
-        <tr align="center">
-          <th colspan="2">参加中の掲示板</th>
-          <td></td>
-        </tr>
-        <% @forums.each do |forum| %>
-          <tr>
-            <td colspan="2">・
-              <%= link_to forum.forum.title, forum_path(forum.id) %>
-            </td>
-            <td></td>
-          </tr>
-        <% end %>
-      <% end %>
       <tr align="center">
-        <th colspan="2">
+        <th class="follow_<%= @user.id %>" colspan="2">
           <% if @user != current_user %>
-            <% if @user.followed_by?(current_user) %>
-              <%= link_to 'フォロー中', user_relation_path(@user.id, @user.id), method: :delete, class:"btn btn-success" %>
-            <% else %>
-              <%= link_to 'フォロー', user_relations_path(@user.id), method: :post, class:"btn btn-primary" %>
-            <% end %>
+            <%= render 'follow', user: @user %>
           <% end %>
         </th>
         <td></td>
@@ -138,17 +134,17 @@
       <% if @user == current_user %>
         <div id="top" class="tab">
           <!--各種通知表示-->
-          <h4><strong>新着博物館</strong></h4>
+          <h4><strong>新着博物館(5軒)</strong></h4>
           <div class="mb-5">
             <h5>　登録</h5>
-            <% @created_museums.each do |museum| %>
-              <% if user_signed_in? %>
+            <% if @created_museums.present? %>
+              <% @created_museums.each do |museum| %>
                 <table>
-                  <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
+                  <tr>　　<%= museum.created_at.strftime('%Y/%m/%d') %></tr>
                   <tr>
                     <%= link_to user_path(museum.user.id) do %>
                       <% if museum.user.is_deleted == false %>
-                        <%= museum.user.name %>さん
+                        <span>　<%= museum.user.name %>さん</span>
                       <% else %>
                         <span>退会済みユーザー</span>
                       <% end %>
@@ -158,16 +154,18 @@
                   <tr><%= link_to museum.name, museum_path(museum.id) %>を投稿しました！</tr>
                 </table>
               <% end %>
+            <% else %>
+              <p>　　新規登録された博物館はありません</p>
             <% end %>
             <h5 class="mt-2">　編集</h5>
-            <% @updated_museums.each do |museum| %>
-              <% if user_signed_in? %>
+            <% if @updated_museums.present? %>
+              <% @updated_museums.each do |museum| %>
                 <table>
                   <tr><%= museum.created_at.strftime('%Y/%m/%d') %></tr>
                   <tr>
                     <%= link_to user_path(museum.user.id) do %>
                       <% if museum.user.is_deleted == false %>
-                        <%= museum.user.name %>さん
+                        <span>　<%= museum.user.name %>さん</span>
                       <% else %>
                         <span>退会済みユーザー</span>
                       <% end %>
@@ -177,6 +175,8 @@
                   <tr><%= link_to museum.name, museum_path(museum.id) %>を編集しました！</tr>
                 </table>
               <% end %>
+            <% else %>
+              <p>　　編集された博物館はありません</p>
             <% end %>
           </div>
           <h4><strong>その他</strong></h4>
@@ -184,7 +184,7 @@
             <% if notifications.exists? %>
               <%= render notifications %>
             <% else %>
-              <p>通知はありません</p>
+              <p>　　通知はありません</p>
             <% end %>
         </div>
       <% end %>
@@ -195,6 +195,7 @@
         <div id="top" class="tab">
       <% end %>
         <!--行った：訪問済み(行ったボタンを押した)施設の一覧表示-->
+      <% if @visits.exists? %>
         <table class="table visited-museum">
           <tr align="center">
             <th></th>
@@ -207,13 +208,13 @@
             <th>コメント数</th>
             <th>写真数</th>
           </tr>
-          <% @museums.each do |museum| %>
-            <% if museum.visited_by?(@user) %>
+          <% @visits.each do |visit| %>
+            <% museum = visit.museum %>
             <tr align="center">
               <td>
                 <% if museum.recommended_by?(@user) %>
                   <i class="fas fa-star star"></i>
-                <% elsif museum.visited_by?(current_user) %>
+                <% elsif museum.visited_by?(@user) %>
                   <i class="fas fa-door-open door"></i>
                 <% end %>
               </td>
@@ -230,145 +231,46 @@
               <td><%= museum.posts.count %> 件</td>
               <td><%= museum.post_images.count %> 枚</td>
             </tr>
-            <% end %>
           <% end %>
         </table>
+      <% else %>
+        <p>訪問した博物館はありません！</p>
+      <% end %>
       </div>
 
       <div id="post" class="tab">
-        <!--コメント：コメントの一覧表示-->
-        <% @posts.each do |post| %>
-          <div class="post-index">
-            <% if post.user.is_deleted == false %>
-              <div class="post-title d-flex">
-                <div class="post-main_title">
-                  <strong><%= post.title %></strong>
-                  <span>
-                    　<%= link_to museum_path(post.museum.id) do %>
-                    　 ＠<%= post.museum.name %>
-                    　<% end %>
-                  </span>
-                </div>
-                <div class="post-user">
-                  <%= link_to user_path(post.user.id) do %>
-                    <%= attachment_image_tag post.user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png", class:"circle-image" %>
-                  <% end %>
-                  <%= post.user.name %>
-                </div>
-              </div>
-              <div class="post-body">
-                <%= post.body %><br/>
-                <!--画像が投稿されていた場合に画像表示-->
-                <% if post.post_images.present? %>
-                  <% post.post_images.each do |image| %>
-                    <%= attachment_image_tag image, :picture, size:"40x40", format:"jpeg" %>
-                  <% end %>
-                <% end %>
-              </div>
-              <div class="post-detail d-flex">
-                <div>
-                  <% if post.how_to_visit.present? %>
-                    <label>訪問方法：</label>
-                    <%= post.how_to_visit %>
-                  <% end %>
-                  <% if post.companion.present? %>
-                    <label>同伴者：</label>
-                    <%= post.companion %>
-                  <% end %>
-                </div>
-                <div>
-                  <% if post.user == current_user %>
-                    <%= link_to edit_museum_post_path(post.museum.id, post.id) do %>
-                      <i class="far fa-edit fa-lg"></i>
-                      編集
-                    <% end %>
-                    <%= link_to museum_post_path(post.museum.id, post.id), method: :delete do %>
-                      <i class="far fa-trash-alt fa-lg"></i>
-                      削除
-                    <% end %>
-                  <% else %>
-                    <% if post.favorited_by?(current_user) %>
-                      <%= link_to museum_post_favorite_path(post.museum.id, post.id, post.id), method: :delete do %>
-                        <i class="fas fa-heart fa-lg"></i>
-                        <%= post.favorites.count %>
-                      <% end %>
-                    <% else %>
-                      <%= link_to museum_post_favorites_path(post.museum.id, post.id), method: :post do %>
-                        <i class="far fa-heart fa-lg"></i>
-                        <%= post.favorites.count %>
-                      <% end %>
-                    <% end %>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
+        <div class="my-posts_index">
+          <% if @my_posts.exists? %>
+            <!--コメント：コメントの一覧表示-->
+            <%= render 'posts', my_posts: @my_posts %>
+          <% else %>
+            <p>まだ投稿していません！</p>
+          <% end %>
+        </div>
       </div>
 
       <div id="post-image" class="tab">
-        <!--アルバム：投稿された写真の一覧表示-->
-        <% @museums.each do |museum| %>
-          <% museum.posted_by(@user).each do |post| %>
-            <% if post.post_images.exists? %>
-              <h4 class="mb-2"><%= post.museum.name %></h4><br/>
-              <% post.post_images.each do |image| %>
-                <%= attachment_image_tag image, :picture, size:"100x100", format:"jpeg" %>
-              <% end %>
+        <% if @user.post_images.exists? %>
+          <!--アルバム：投稿された写真の一覧表示-->
+          <% @museums.each do |museum| %>
+            <% museum.posted_by(@user).each do |post| %>
+                <% if post.post_images.exists? %>
+                  <h4 class="m-0 mt-3"><%= post.museum.name %></h4><br/>
+                  <% post.post_images.each do |image| %>
+                    <%= attachment_image_tag image, :picture, size:"100x100", format:"jpeg" %>
+                  <% end %>
+                <% end %>
             <% end %>
           <% end %>
+        <% else %>
+          <p>まだ写真を投稿していません！</p>
         <% end %>
       </div>
 
       <div id="follow" class="tab">
         <!--フォロー・フォロワー：フォローしている人、されている人の一覧表示-->
-        <div>
-          <div>
-            <h5><strong>フォロー</strong></h5>
-            <table class="table">
-              <tr align="center">
-                <th></th>
-                <th></th>
-                <th>訪問軒数</th>
-                <th>おすすめ</th>
-                <th>コメント数</th>
-                <th>写真数</th>
-              </tr>
-              <% @followings.each do |following| %>
-              <tr align="center">
-                <td><%= attachment_image_tag following, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png" %></td>
-                <td><%= following.name %></td>
-                <td><%= following.visits.count %> 軒</td>
-                <td><%= following.recommends.count %> 軒</td>
-                <td><%= following.posts.count %> 件</td>
-                <td><%= following.post_images.count %> 枚</td>
-              </tr>
-              <% end %>
-            </table>
-          </div>
-          <div>
-            <h5><strong>フォロワー</strong></h5>
-            <table class="table">
-              <tr align="center">
-                <th></th>
-                <th></th>
-                <th>訪問軒数</th>
-                <th>おすすめ</th>
-                <th>コメント数</th>
-                <th>写真数</th>
-              </tr>
-              <% @followeds.each do |followed| %>
-              <tr align="center">
-                <td><%= attachment_image_tag followed, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png" %></td>
-                <td><%= followed.name %></td>
-                <td><%= followed.visits.count %> 軒</td>
-                <td><%= followed.recommends.count %> 軒</td>
-                <td><%= followed.posts.count %> 件</td>
-                <td><%= followed.post_images.count %> 枚</td>
-              </tr>
-              <% end %>
-            </table>
-          </div>
+        <div class="follow_tab">
+          <%= render partial: 'users/follow_tab', locals: {followings: @followings, followeds: @followeds} %>
         </div>
       </div>
     </div>

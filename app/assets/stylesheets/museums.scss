@@ -4,7 +4,7 @@
 
 // showページに適用
 .museum-info {
-  z-index: 10;
+  z-index: 1;
   box-sizing: border-box;
   height: 100%;
   position: fixed;
@@ -20,11 +20,25 @@
   word-break : break-all;
 }
 
+.posts-form {
+  display: none;
+  border: solid 1px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
 .post-form {
   border: solid 1px;
   border-radius: 10px;
   margin-bottom: 10px;
   width: 100%;
+}
+
+.posts-title {
+  padding: 5px 10px;
+  border-bottom: solid 1px;
+  justify-content: space-between;
 }
 
 .post-title {
@@ -33,22 +47,39 @@
   justify-content: space-between;
 }
 
+.posts-body {
+  padding: 5px 10px;
+  background-color: #c0f;
+}
+
 .post-body {
   padding: 5px 10px;
   background-color: #c0f;
 }
 
-.post-detail {
+.posts-form-detail {
   padding: 5px 10px;
   border-top: solid 1px;
   font-size: 14px;
   justify-content: space-between;
 }
 
+.post-detail {
+  padding: 0px 10px;
+  border-top: solid 1px;
+  font-size: 14px;
+  justify-content: space-between;
+}
+
+
 .post-button {
   padding: 5px 10px;
   border-top: solid 1px;
   text-align: center;
+}
+
+.post-day {
+  border-left: solid 1px;
 }
 
 .post-index {

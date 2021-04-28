@@ -1,0 +1,8 @@
+<% posts.each do |post| %>
+  <% if post.user.is_deleted == false %>
+    <!--コメント表示を部分テンプレート化-->
+    <div class="post_<%= post.id %>">
+      <%= render partial: 'museums/post', locals: {post: post, museum: museum} %>
+    </div>
+  <% end %>
+<% end %>

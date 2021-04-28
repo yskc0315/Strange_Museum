@@ -53,6 +53,12 @@
   border-radius: 10px;
 }
 
+.forum-descriptions {
+  margin-right: 2px;
+  background-color: #d2691e;
+  border-radius: 10px;
+}
+
 
 // showページに適用
 .forum-detail {
@@ -61,12 +67,66 @@
 
 // chatページに適用
 .forum-post-form {
-  position: fixed;
-  bottom: 0;
   justify-content: space-around;
 }
 
-.forum-post-user {
-  width: 50px;
-  height: 10px;
+.forum-post {
+  height: 500px;
+}
+
+.forum-post-display {
+  width: 100%;
+  height: 90%;
+  background-color: #87cefa;
+  overflow-y: scroll;
+}
+
+.forum-right,
+.forum-left {
+  margin: 30px 0;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.forum-right {
+  justify-content: flex-end;
+}
+
+.forum-message {
+  max-width: 40%;
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  padding: 17px 13px 15px 18px;
+  border-radius: 12px;
+  background: #7cfc00;
+  box-sizing: border-box;
+  margin: 0 !important;
+  line-height: 1.5;
+}
+
+.others-message {
+  background: #f5f5f5;
+}
+
+.user-icon {
+  width: 8%;
+  height: auto;
+}
+
+.forum-message:after {
+  content: "";
+  position: absolute;
+  border: 10px solid transparent;
+}
+
+.forum-right .forum-message:after {
+  right: -26px;
+  border-left: 22px solid #7cfc00;
+}
+
+.forum-left .forum-message:after {
+  left: -26px;
+  border-right: 22px solid #f5f5f5;
+  padding-left: 6px;
 }

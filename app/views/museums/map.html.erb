@@ -1,44 +1,96 @@
-<div>
-  <!--地図表示-->
-  <div id='map'></div>
-    <style>
-      #map {
-        height: 500px ;
-        width: 500px ;
-      }
-    </style>
-  <script>
-    let map
-      function initMap(){
-        geocoder = new google.maps.Geocoder()
+<div class="page-title">
+  <h3>
+    <i class="fas fa-map-marked-alt"> 全体マップ</i>
+  </h3>
+</div>
 
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: 38.258595, lng:137.6850225},
-            zoom: 5,
-        });
+<div class="mb-3">
+  <!--検索フォーム-->
+  <input id="address" type="textbox">
+  <input type="button" value="検索" onclick="codeAddress()" class="btn btn-success">
+</div>
 
-        <% @museums.each do |m| %>
-            (function(){
-            var contentString = "<%= m.name %>";
-
-            var marker = new google.maps.Marker({
-                position:{lat: <%= m.latitude %>, lng: <%= m.longitude %>},
-                map: map,
-                title: contentString
-            });
-            // 情報ウィンドウ(吹き出し)の定義
-            // 投稿の詳細ページへのリンクも
-            var infowindow = new google.maps.InfoWindow({
-            position: {lat: <%= m.latitude %>, lng: <%= m.longitude %>},
-            content: contentString
-            });
-            // クリックしたときに情報ウィンドウを表示
-            marker.addListener('click', function() {
-            infowindow.open(map, marker);
-            });
-            })();
+<div class="row">
+  <div class="col-md-4">
+    <table class="table">
+      <thead>
+        <tr align="center">
+          <th>施設名</th>
+          <th>おすすめ</th>
+          <th>訪問数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @museums.each do |museum| %>
+          <tr align="center">
+            <td><%= museum.name %></td>
+            <td><%= museum.recommends.count %></td>
+            <td><%= museum.visits.count %></td>
+          </tr>
         <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-md-8">
+    <!--地図表示-->
+    <div id='map'></div>
+      <style>
+        #map {
+          height: 450px ;
+          width: 700px ;
         }
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['API_KEY']%>&callback=initMap" async defer></script>
+      </style>
+    <script>
+      let geocoder
+        function codeAddress(){
+          let inputAddress = document.getElementById('address').value;
+
+          geocoder.geocode( { 'address': inputAddress}, function(results, status) {
+            if (status == 'OK') {
+              map.setCenter(results[0].geometry.location);
+              var marker = new google.maps.Marker({
+                  map: map,
+                  position: results[0].geometry.location
+              });
+            } else {
+              alert('該当する結果がありませんでした：' + status);
+            }
+          });
+        }
+
+      let map
+        function initMap(){
+          geocoder = new google.maps.Geocoder()
+
+          map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: 38.258595, lng:137.6850225},
+              zoom: 5,
+          });
+
+          <% @museums.each do |m| %>
+              (function(){
+              var contentString = "<%= m.name %>";
+
+              var marker = new google.maps.Marker({
+                  position:{lat: <%= m.latitude %>, lng: <%= m.longitude %>},
+                  map: map,
+                  title: contentString
+              });
+              // 情報ウィンドウ(吹き出し)の定義
+              // 投稿の詳細ページへのリンクも
+              var infowindow = new google.maps.InfoWindow({
+              position: {lat: <%= m.latitude %>, lng: <%= m.longitude %>},
+              content: contentString
+              });
+              // クリックしたときに情報ウィンドウを表示
+              marker.addListener('click', function() {
+              infowindow.open(map, marker);
+              });
+              })();
+          <% end %>
+          }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['API_KEY']%>&callback=initMap" async defer></script>
+  </div>
 </div>

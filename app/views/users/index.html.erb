@@ -25,39 +25,55 @@
         <th>コメント数</th>
         <th>投稿写真数</th>
         <th></th>
+        <% if current_user.admin? %>
+          <th>
+            ステータス
+          </th>
+        <% end %>
       </tr>
     </thead>
-    <tbody>
-    　<% @users.each do |user| %>
-    　　<% if user.is_deleted == false %>
-          <tr align="center">
-            <td>
-              <% if user.forum_host?(user) %>
-                <i class="fas fa-clipboard-list fa-lg clipboard"></i>
-              <% end %>
-            </td>
-            <td align="left">
-              <%= link_to user_path(user.id) do %>
-                <%= attachment_image_tag user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png", class:"circle-image" %>
-                <%= user.name %>
-              <% end %>
-            </td>
-            <td><%= user.visits.count %>軒</td>
-            <td><%= user.recommends.count %>軒</td>
-            <td><%= user.posts.count %>件</td>
-            <td><%= user.post_images.count %>枚</td>
-            <% if user != current_user %>
+    <% if current_user.admin? %>
+      <tbody class="user_index">
+        <%= render 'user_index', users: @users %>
+      </tbody>
+    <% else %>
+      <tbody>
+        <% @users.each do |user| %>
+          <% if user.is_deleted == false %>
+            <tr align="center">
               <td>
-                <% if user.followed_by?(current_user) %>
-                  <%= link_to 'フォロー中', user_relation_path(user.id, user.id), method: :delete, class:"btn btn-success" %>
-                <% else %>
-                  <%= link_to 'フォロー', user_relations_path(user.id), method: :post , class:"btn btn-primary"%>
+                <% if user.forum_host?(user) %>
+                  <i class="fas fa-clipboard-list fa-lg clipboard"></i>
                 <% end %>
               </td>
-            <% end %>
-          </tr>
+              <td align="left">
+                <%= link_to user_path(user.id) do %>
+                  <%= attachment_image_tag user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png", class:"circle-image" %>
+                  <%= user.name %>
+                <% end %>
+              </td>
+              <td><%= user.visits.count %>軒</td>
+              <td><%= user.recommends.count %>軒</td>
+              <td><%= user.posts.count %>件</td>
+              <td><%= user.post_images.count %>枚</td>
+              <td class="follow_<%= user.id %>">
+                <% if user != current_user %>
+                    <%= render 'follow', user: user %>
+                <% end %>
+              </td>
+              <% if current_user.admin? %>
+                <td>
+                  <% if user.is_deleted == false %>
+                    <%= link_to '有効', user_withdraw_path(user.id), class:"btn btn-info" %>
+                  <% else %>
+                    <%= link_to '退会', user_back_path(user.id), class:"btn btn-danger" %>
+                  <% end %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
         <% end %>
-      <% end %>
-    </tbody>
+      </tbody>
+    <% end %>
   </table>
 </div>

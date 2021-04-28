@@ -58,12 +58,8 @@
             <td><%= user.posts.count %>件</td>
             <td><%= user.post_images.count %>枚</td>
             <% if user != current_user %>
-              <td>
-                <% if user.followed_by?(current_user) %>
-                  <%= link_to 'フォロー中', user_relation_path(user.id, user.id), method: :delete, class:"btn btn-success" %>
-                <% else %>
-                  <%= link_to 'フォロー', user_relations_path(user.id), method: :post , class:"btn btn-primary"%>
-                <% end %>
+              <td class="follow_<%= user.id %>">
+                <%= render 'follow', user: user %>
               </td>
             <% end %>
           </tr>

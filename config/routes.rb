@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     resources :relations, only:[:create, :destroy]
   end
   put '/users/:id/withdraw' => 'users#withdraw', as: 'user_withdraw'
+  put '/users/:id/back' => 'users#back', as: 'user_back'
 
   get 'museums/sort' => 'museums#sort'
   resources :museums do

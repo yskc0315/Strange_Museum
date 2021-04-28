@@ -4,6 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+# ↓バリデーション
+  validates :name, presence: true, length: {in: 1..10}, uniqueness: true
+# ↑バリデーション
   attachment :profile_image
   attachment :picture
 
@@ -11,15 +14,15 @@ class User < ApplicationRecord
   has_many :followings, through: :active_relations, source: :followed
   has_many :passive_relations, class_name: "Relation", foreign_key: :followed_id, dependent: :destroy
   has_many :followeds, through: :passive_relations, source: :following
-  has_many :recommends
+  has_many :recommends, dependent: :destroy
   has_many :recommended_museums, through: :recommends, source: :museum
-  has_many :visits
+  has_many :visits, dependent: :destroy
   has_many :visited_museums, through: :visits, source: :museum
   has_many :favorites
-  has_many :posts
+  has_many :posts, dependent: :destroy
   has_many :post_images, through: :posts
-  has_many :forum_posts
-  has_many :forum_users
+  has_many :forum_posts, dependent: :destroy
+  has_many :forum_users, dependent: :destroy
   has_many :forums, through: :forum_users
   has_many :museums
   has_many :active_notifications, class_name: "Notification", foreign_key: :visitor_id, dependent: :destroy

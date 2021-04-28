@@ -1,0 +1,10 @@
+<% if museum.recommended_by?(current_user) %>
+  <%= link_to museum_recommend_path(museum.id, museum.id), method: :delete, remote: true do %>
+    <i class="fas fa-star fa-2x star"></i>
+  <% end %>
+<% else %>
+  <%= link_to museum_recommends_path(museum.id), method: :post, remote: true do %>
+    <i class="far fa-star fa-2x unchecked-star"></i>
+  <% end %>
+<% end %>
+<%= museum.recommends.count %>

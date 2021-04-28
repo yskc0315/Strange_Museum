@@ -20,6 +20,7 @@
 //= require_tree .
 
 $(document).on('turbolinks:load', function() {
+
   $(function() {
     $('#tab-contents .tab[id != "top"]').hide();
   });
@@ -33,4 +34,24 @@ $(document).on('turbolinks:load', function() {
       event.preventDefault();
     });
   });
+
+  $(function() {
+    $("#scroll-inner").scrollTop($("#scroll-inner")[0].scrollHeight);
+  });
+
+  $(function(){
+    $('#post-button').click(function(){
+      // $('#post-button').attr('id', 'post-form-open');
+      $('.posts-form').toggle();
+    });
+  });
+
+  $(function() {
+    $('#slider').slick({
+        dots: true, //スライドの下にドットのナビゲーションを表示
+        autoplay: true, //自動再生
+        autoplaySpeed: 2500, //再生スピード
+    });
+  });
+
 });
