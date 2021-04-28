@@ -1,8 +1,8 @@
 <div class="relative">
   <div class="slide_images" id="slider">
-    % @post_images.each do |post_image| %>
-      %= attachment_image_tag post_image, :picture, :fill, 1200, 600, format: "jpeg", class:"slide_image" %>
-    % end %>
+    <% @post_images.each do |post_image| %>
+      <%= attachment_image_tag post_image, :picture, :fill, 1200, 600, format: "jpeg", class:"slide_image" %>
+    <% end %>
   </div>
   <h1 class="absolute">あなたの知らない未知の世界へ</h1>
 </div>
