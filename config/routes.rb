@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   # デバイス用のルーティング
   devise_for :users
   # ルートパス
-  root 'homes#top'
+  root 'museums#new'
   get '/about' => 'homes#about'
   # ユーザーのルーティング
   # relationを入れ子構造に

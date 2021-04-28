@@ -16,7 +16,7 @@
       <div class="container d-flex header-menu">
         <div class="logo">
           <%= link_to root_path do %>
-            <%= image_tag asset_path('logo.png') %>
+            <%= image_tag asset_path('logo.png'), class:"logo" %>
           <% end %>
         </div>
         <% if user_signed_in? %>
@@ -85,11 +85,11 @@
         </div>
       <% end %>
     </header>
-    
+
     <div class="container main">
       <%= yield %>
     </div>
-    
+
     <footer>
       <p class="copy-right pt-3">©2021 Strange Museum</p>
     </footer>
