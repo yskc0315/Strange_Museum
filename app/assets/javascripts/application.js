@@ -43,9 +43,11 @@ $(document).on('turbolinks:load', function() {
 
   $(function() {
     $('#slider').slick({
-        dots: true, //スライドの下にドットのナビゲーションを表示
-        autoplay: true, //自動再生
-        autoplaySpeed: 2500, //再生スピード
+        dots: true,
+        autoplay: true,
+        autoplaySpeed: 2500,
+        slidesToShow: 2,
+        slidesToScroll: 1
     });
   });
 

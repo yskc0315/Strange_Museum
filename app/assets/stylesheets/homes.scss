@@ -9,6 +9,7 @@
 
 .slide_image {
   opacity: 0.5;
+  max-height: 600px;
 }
 
 .slick-next {
@@ -29,7 +30,7 @@
 .absolute {
   position: absolute;
   bottom: 300px;
-  left: 400px;
+  left: 360px;
   z-index: 100;
   font-weight: bold;
 }
