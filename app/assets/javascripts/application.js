@@ -35,13 +35,12 @@ $(document).on('turbolinks:load', function() {
     });
   });
 
-  $(function() {
-    $("#scroll-inner").scrollTop($("#scroll-inner")[0].scrollHeight);
-  });
+  // $(function() {
+  //   $("#scroll-inner").scrollTop($("#scroll-inner")[0].scrollHeight);
+  // });
 
   $(function(){
     $('#post-button').click(function(){
-      // $('#post-button').attr('id', 'post-form-open');
       $('.posts-form').toggle();
     });
   });
