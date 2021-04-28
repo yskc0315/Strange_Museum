@@ -35,10 +35,6 @@ $(document).on('turbolinks:load', function() {
     });
   });
 
-  // $(function() {
-  //   $("#scroll-inner").scrollTop($("#scroll-inner")[0].scrollHeight);
-  // });
-
   $(function(){
     $('#post-button').click(function(){
       $('.posts-form').toggle();
