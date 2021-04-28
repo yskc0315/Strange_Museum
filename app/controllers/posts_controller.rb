@@ -6,7 +6,8 @@ class PostsController < ApplicationController
     post = @museum.posts.build(params_post)
     post.user_id = current_user.id
     post.save
-    @posts = Post.where(museum_id: params[:museum_id]).order(id: "DESC")
+    @posts = Post.where(museum_id: params[:museum_id]).order(id: "DESC").page(params[:posts_page]).per(30)
+    @post_images = @museum.post_images.order(id: "DESC")
   end
 
   def edit

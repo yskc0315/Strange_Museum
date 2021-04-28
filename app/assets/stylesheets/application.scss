@@ -27,6 +27,12 @@ body {
   min-height: 100vh;
 }
 
+.logo {
+  margin-top: 20px;
+  width: 100px;
+  height: 50px;
+}
+
 .main {
   flex: 1;
 }
@@ -37,6 +43,10 @@ header {
   width: 100%;
   height: 100px;
   background-color: #b22222;
+}
+
+.header-menu {
+  justify-content: space-between;
 }
 
 .header-lists {
@@ -121,4 +131,8 @@ footer {
 
 .copy-right {
   color: #fff;
+}
+
+.pagination {
+  justify-content: center;
 }

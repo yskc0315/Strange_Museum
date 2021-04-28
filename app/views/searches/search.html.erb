@@ -1,12 +1,124 @@
+<div class="page-title">
+  <h3>
+    <i class="fas fa-search"> 検索結果</i>
+  </h3>
+</div>
+
 <% if @range == "User" %>
   <% @users.each do |user| %>
     <% if user.is_deleted == false %>
-      <%= user.name %>
+      <div class="row">
+        <table class="table">
+          <thead>
+            <tr align="center">
+              <th></th>
+              <th></th>
+              <th>訪問軒数</th>
+              <th>おすすめ軒数</th>
+              <th>コメント数</th>
+              <th>投稿写真数</th>
+              <th></th>
+              <% if current_user.admin? %>
+                <th>
+                  ステータス
+                </th>
+              <% end %>
+            </tr>
+          </thead>
+          <% if current_user.admin? %>
+            <tbody class="user_index">
+              <%= render 'user_index', users: @users %>
+            </tbody>
+          <% else %>
+            <tbody>
+              <% @users.each do |user| %>
+                <% if user.is_deleted == false %>
+                  <tr align="center">
+                    <td>
+                      <% if user.forum_host?(user) %>
+                        <i class="fas fa-clipboard-list fa-lg clipboard"></i>
+                      <% end %>
+                    </td>
+                    <td align="left">
+                      <%= link_to user_path(user.id) do %>
+                        <%= attachment_image_tag user, :profile_image, size:"40x40", format:"jpeg", fallback:"no_image.png", class:"circle-image" %>
+                        <%= user.name %>
+                      <% end %>
+                    </td>
+                    <td><%= user.visits.count %>軒</td>
+                    <td><%= user.recommends.count %>軒</td>
+                    <td><%= user.posts.count %>件</td>
+                    <td><%= user.post_images.count %>枚</td>
+                    <td class="follow_<%= user.id %>">
+                      <% if user != current_user %>
+                          <%= render 'follow', user: user %>
+                      <% end %>
+                    </td>
+                    <% if current_user.admin? %>
+                      <td>
+                        <% if user.is_deleted == false %>
+                          <%= link_to '有効', user_withdraw_path(user.id), class:"btn btn-info" %>
+                        <% else %>
+                          <%= link_to '退会', user_back_path(user.id), class:"btn btn-danger" %>
+                        <% end %>
+                      </td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          <% end %>
+        </table>
+      </div>
     <% end %>
   <% end %>
 <% elsif @range == "Museum" %>
-  <% @museums.each do |museum| %>
-    <%= museum.name %>
-    <%= museum.user.name %>
-  <% end %>
+  <div class="row">
+    <table class="table">
+      <thead>
+        <tr align="center">
+          <th></th>
+          <th></th>
+          <th>所在地</th>
+          <th>ジャンル</th>
+          <th>訪問人数</th>
+          <th>おすすめ</th>
+          <th>コメント</th>
+          <th>写真数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @museums.each do |museum| %>
+        <tr align="center">
+          <td>
+            <% if user_signed_in? %>
+              <% if museum.recommended_by?(current_user) %>
+                <i class="fas fa-star star"></i>
+              <% elsif museum.visited_by?(current_user) %>
+                <i class="fas fa-door-open door"></i>
+              <% end %>
+            <% end %>
+          </td>
+          <td align="left">
+            <%= attachment_image_tag museum, :appearance_image, size:"40x40", format:"jpeg" %>
+            <%= link_to museum.name, museum_path(museum.id) %>
+          </td>
+          <td><%= museum.prefecture %></td>
+          <td><%= museum.genre.name %></td>
+          <td><%= museum.visits.count %>人</td>
+          <td><%= museum.recommends.count %>人</td>
+          <td><%= museum.posts.count %>件</td>
+          <td>
+            <% sum = 0 %>
+            <% museum.posts.each do |post| %>
+              <% sum += post.post_images.count %>
+            <% end %>
+            <%= sum %> 枚
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 <% end %>
+

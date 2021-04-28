@@ -30,6 +30,7 @@
         <% end %>
       </tbody>
     </table>
+    <%= paginate @museums %>
   </div>
 
   <div class="col-md-8">
@@ -68,7 +69,7 @@
               zoom: 5,
           });
 
-          <% @museums.each do |m| %>
+          <% @map_museums.each do |m| %>
               (function(){
               var contentString = "<%= m.name %>";
 

@@ -21,11 +21,12 @@ class MuseumsController < ApplicationController
 
   def show
     @post = Post.new
-    @posts = Post.where(museum_id: params[:id]).order(id: "DESC")
+    @posts = Post.where(museum_id: params[:id]).order(id: "DESC").page(params[:posts_page]).per(30)
+    @post_images = @museum.post_images.order(id: "DESC")
   end
 
   def index
-    @museums = Museum.all.order(:prefecture)
+    @museums = Museum.order(:prefecture).page(params[:page]).per(20)
   end
 
   def edit
@@ -68,7 +69,8 @@ class MuseumsController < ApplicationController
   end
 
   def map
-    @museums = Museum.all.order(:prefecture)
+    @map_museums = Museum.all.order(:prefecture)
+    @museums = Museum.all.order(:prefecture).page(params[:page]).per(20)
   end
 
   private

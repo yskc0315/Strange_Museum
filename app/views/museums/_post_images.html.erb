@@ -1,8 +1,6 @@
-<% if museum.post_images.exists? %>
-  <% posts.each do |post| %>
-    <% post.post_images.each do |image| %>
-      <%= attachment_image_tag image, :picture, size:"100x100", format:"jpeg" %>
-    <% end %>
+<% if post_images.exists? %>
+  <% post_images.each do |image| %>
+    <%= attachment_image_tag image, :picture, size:"140x140", format:"jpeg" %>
   <% end %>
 <% else %>
   <p>投稿された画像はありません！</p>

@@ -161,9 +161,11 @@
         </div>
         <div id="post-image" class="tab">
           <div class="post_image_index">
-            <%= render partial: 'museums/post_images', locals: {posts: @posts, museum: @museum} %>
+            <%= render partial: 'museums/post_images', locals: {post_images: @post_images} %>
           </div>
         </div>
+      <% else %>
+        <strong><p class="mt-3">　ログイン後ご覧いただけます！</p></strong>
       <% end %>
     </div>
   </div>

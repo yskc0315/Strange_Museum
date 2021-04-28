@@ -13,8 +13,13 @@
 
   <body>
     <header>
-      <% if user_signed_in? %>
-        <div class="container">
+      <div class="container d-flex header-menu">
+        <div class="logo">
+          <%= link_to root_path do %>
+            <img src="/assets/logo.png" alt="" width="100" height="50">
+          <% end %>
+        </div>
+        <% if user_signed_in? %>
           <ul class="header-lists d-flex">
             <li class="header-list">
               <%= link_to user_path(current_user.id), {:class => "header-link"} do %>
@@ -66,11 +71,11 @@
               <% end %>
             </li>
           </ul>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
 
       <% if user_signed_in? %>
-        <div class="search-box d-flex">
+        <div class="search-box d-flex pr-3">
           <%= form_with url: search_path, local: true, method: :get do |f| %>
             <%= f.select :range, options_for_select([["ユーザー","User"],["博物館","Museum"]]) %>
             <%= f.select :search, options_for_select([["完全一致","perfect_match"],["部分一致","partial_match"]]) %>
@@ -84,7 +89,7 @@
       <%= yield %>
     </div>
     <footer>
-      <p class="copy-right">©Yoshiki Okada</p>
+      <p class="copy-right pt-3">©2021 Strange Museum</p>
     </footer>
   </body>
 </html>

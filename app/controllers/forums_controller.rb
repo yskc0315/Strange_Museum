@@ -15,7 +15,7 @@ class ForumsController < ApplicationController
   end
 
   def index
-    @forums = Forum.all.order(id:"DESC")
+    @forums = Forum.all.order(id:"DESC").page(params[:page]).per(15)
     @forum = Forum.new
     @forum.users << current_user
   end
