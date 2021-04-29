@@ -7,9 +7,9 @@ class UsersController < ApplicationController
   end
 
   def show
-    @my_posts       = Post.where(user_id: @user.id).order(id: "DESC")
-    @visits        = Visit.where(user_id: current_user.id)
-    @museums    = Museum.all.order(:prefecture)
+    @my_posts    = Post.where(user_id: @user.id).order(id: "DESC")
+    @visits      = Visit.where(user_id: current_user.id)
+    @museums     = Museum.all.order(:prefecture)
     @forum_users = ForumUser.where(user_id: params[:id])
     @followings  = @user.followings
     @followeds   = @user.followeds

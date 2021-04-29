@@ -230,7 +230,7 @@
         <div class="my-posts_index">
           <% if @my_posts.exists? %>
             <!--コメント：コメントの一覧表示-->
-            <%= render 'posts', my_posts: @my_posts %>
+              <%= render 'users/posts', my_posts: @my_posts %>
           <% else %>
             <p>まだ投稿していません！</p>
           <% end %>
@@ -242,7 +242,7 @@
           <!--アルバム：投稿された写真の一覧表示-->
           <% @museums.each do |museum| %>
             <% museum.posted_by(@user).each do |post| %>
-                <% if post.post_images.exists? %>
+                <% if post.post_images.exipossts? %>
                   <h4 class="m-0 mt-3"><%= post.museum.name %></h4><br/>
                   <% post.post_images.each do |image| %>
                     <%= attachment_image_tag image, :picture, size:"100x100", format:"jpeg" %>
@@ -262,7 +262,6 @@
         </div>
       </div>
     </div>
-    <!--<script src="assets/javascripts/jquery.min.js"></script>-->
     <script defer="application.js"></script>
   </div>
 </div>

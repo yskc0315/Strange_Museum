@@ -6,7 +6,7 @@ class PostsController < ApplicationController
     post = @museum.posts.build(params_post)
     post.user_id = current_user.id
     post.save
-    @posts = Post.where(museum_id: params[:museum_id]).order(id: "DESC").page(params[:posts_page]).per(30)
+    @posts = Post.where(museum_id: params[:museum_id]).order(id: "DESC")
     @post_images = @museum.post_images.order(id: "DESC")
   end
 
@@ -22,9 +22,11 @@ class PostsController < ApplicationController
 
   def destroy
     @post = @museum.posts.find(params[:id])
+    user = @post.user
     @post.destroy
     @posts = Post.where(museum_id: params[:museum_id]).order(id: "DESC")
-    @my_posts = Post.where(user_id: @post.user.id).order(id: "DESC")
+    @post_images = @museum.post_images.order(id: "DESC")
+    @my_posts    = Post.where(user_id: user.id).order(id: "DESC")
   end
 
   private

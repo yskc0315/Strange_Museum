@@ -13,18 +13,20 @@
       <h2>新着博物館</h2>
       <div class="d-flex">
         <% @created_museums.each do |museum| %>
-          <table>
-            <tr align="center">
-              <th>
-                <%= link_to museum_path(museum.id) do %>
-                  <%= attachment_image_tag museum, :appearance_image, size:"150x150", format: "jpeg" %>
-                <% end %>
-              </th>
-            </tr>
-            <tr align="center">
-              <th><%= museum.name %></th>
-            </tr>
-          </table>
+          <div class="m-1">
+            <table>
+              <tr align="center">
+                <th>
+                  <%= link_to museum_path(museum.id) do %>
+                    <%= attachment_image_tag museum, :appearance_image, size:"150x150", format: "jpeg" %>
+                  <% end %>
+                </th>
+              </tr>
+              <tr align="center">
+                <th><%= museum.name %></th>
+              </tr>
+            </table>
+          </div>
         <% end %>
       </div>
     </div>

@@ -21,7 +21,7 @@ class MuseumsController < ApplicationController
 
   def show
     @post = Post.new
-    @posts = Post.where(museum_id: params[:id]).order(id: "DESC").page(params[:posts_page]).per(30)
+    @posts = Post.where(museum_id: params[:id]).order(id: "DESC").page(params[:page]).per(30)
     @post_images = @museum.post_images.order(id: "DESC")
   end
 
