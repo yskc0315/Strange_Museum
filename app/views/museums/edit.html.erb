@@ -10,8 +10,8 @@
 <div class="row">
   <div class="col-md-1"></div>
   <div class="col-md-10">
-    <table class="table table-borderless">
-      <%= form_with model:@museum, local:true do |f| %>
+    <%= form_with model:@museum, local:true do |f| %>
+      <table class="table table-borderless">
         <tr>
           <th>
             <%= f.label :appearance_image, '外観イメージ' %>
@@ -97,8 +97,8 @@
           </td>
           <td></td>
         </tr>
-      <% end %>
-    </table>
+      </table>
+    <% end %>
   </div>
   <div class="col-md-1"></div>
 </div>

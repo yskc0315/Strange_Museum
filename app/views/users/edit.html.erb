@@ -10,8 +10,8 @@
   <div class="col-md-1"></div>
   <div class="col-md-10">
     <% if @user.id == current_user.id %>
-      <table class="table table-borderless">
-        <%= form_with model:@user, local:true do |f| %>
+      <%= form_with model:@user, local:true do |f| %>
+        <table class="table table-borderless">
           <tr>
             <th>
               <%= f.label :profile_image, 'アイコン画像' %>
@@ -42,8 +42,8 @@
             </th>
             <td></td>
           </tr>
-        <% end %>
-      </table>
+        </table>
+      <% end %>
     <% end %>
   </div>
 </div>

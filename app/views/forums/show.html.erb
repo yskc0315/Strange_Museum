@@ -23,11 +23,11 @@
       </tr>
       <tr>
         <th>行った博物館</th>
-        <td>　<%= @forum.user.visits.count %> 件</td>
+        <td>　<%= @forum.user.visits.count %> 軒</td>
       </tr>
       <tr>
         <th>おすすめした博物館</th>
-        <td>　<%= @forum.user.recommends.count %> 件</td>
+        <td>　<%= @forum.user.recommends.count %> 軒</td>
       </tr>
       <tr>
         <td>　</td>
@@ -43,20 +43,9 @@
         <td colspan="2"><%= @forum.user.introduction %></td>
         <td></td>
       </tr>
-      <% if @forum.user.forums.present? %>
-        <tr align="center">
-          <th colspan="2">掲示板への投稿</th>
-          <td></td>
-        </tr>
-        <% @forum.user.forums.each do |forum| %>
-          <tr>
-            <td colspan="2">・
-              <%= link_to forum.title, forum_path(forum.id) %>
-            </td>
-            <td></td>
-          </tr>
-        <% end %>
-      <% end %>
+      <tr>
+        <td>　</td>
+      </tr>
       <tr align="center">
         <th colspan="2">
           <% if @forum.user != current_user %>
