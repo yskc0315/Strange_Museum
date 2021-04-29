@@ -45,8 +45,6 @@
           <td></td>
         </tr>
       <% end %>
-    </table>
-    <table class="user-table mt-3">
       <% if @forum_users.present? %>
         <tr align="center">
           <th colspan="2">参加中の掲示板</th>
@@ -54,19 +52,17 @@
         </tr>
         <% @forum_users.each do |forum_user| %>
           <tr>
-            <td class="forum-icon">
+            <td>
               <% if forum_user.forum.user_id == @user.id %>
                 <i class="fas fa-chalkboard-teacher"></i>
+              <% else %>
+                <span>　</span>
               <% end %>
-            </td>
-            <td>
               <%= link_to forum_user.forum.title, forum_path(forum_user.forum.id) %>
             </td>
           </tr>
         <% end %>
       <% end %>
-    </table>
-    <table class="user-table">
       <tr align="center">
         <th class="follow_<%= @user.id %>" colspan="2">
           <% if @user != current_user %>
